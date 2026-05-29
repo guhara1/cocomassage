@@ -359,16 +359,27 @@ function serviceBookingSection(s) {
       <p>관리 중 압이나 자극이 세거나 약하다고 느끼면 언제든 말씀해 주세요. ${esc(SITE.brand)}는 통증을 참게 하지 않고 컨디션에 맞춰 조절하며, 건전한 휴식·컨디션 관리 범위로만 진행합니다. 알레르기·임신·질환 등 사전에 알아야 할 사항이 있으면 예약 시 함께 알려주시면 안전하게 진행할 수 있습니다.</p>`;
 }
 // 지역 고유 데이터(customer/timing/rec)로 구성한 '이용 상황과 예약 안내' 섹션
-function situationSection(a) {
+function situationSection(a, prefix) {
   const recNames = a.rec.map((r) => r.n).join(", ");
   const who = a.customer ? `${esc(a.name)}는 주로 ${esc(a.customer)}의 문의가 많아, 컨디션과 일정에 맞춘 안내를 우선합니다. ` : "";
-  return `<h2>${esc(a.name)} 이용 상황과 예약 안내</h2>
+  return `<h2>${esc(a.name)} 가격 안내</h2>
+      ${priceTableCompact(prefix)}
+
+      <h2>${esc(a.name)} 이용 상황과 예약 안내</h2>
       <p>${who}${esc(a.timing)}</p>
       <p>${esc(a.name)}에서는 ${esc(recNames)} 관리를 자주 찾습니다. 처음이라면 60분으로 전신을 가볍게 경험한 뒤, 충분한 이완이나 부위별 집중을 원할 때 90분 이상으로 늘리는 방식을 권합니다. 어떤 관리가 맞을지 고민되면 예약 시 컨디션을 알려주시면 ${esc(SITE.responsibleTeam)}이 추천해 드립니다.</p>
       <p>${esc(a.name)} 방문 예약은 전화 ${esc(SITE.phone)} 또는 문자로 받습니다. ① 방문할 동과 건물 유형(아파트·오피스텔·숙소 등), ② 희망 날짜와 시간, ③ 원하는 관리 종류와 시간을 알려주시면 ${esc(a.name)} 기준 가능 시간과 출장비를 확인해 안내해 드립니다.</p>
-      <p>예약 후 일정 변경이나 취소는 미리 연락 주시면 원활하게 조정됩니다. ${esc(SITE.brand)}는 건전한 휴식·컨디션 관리 범위로만 진행하며, 알레르기·임신·질환 등 사전에 알아야 할 사항이 있으면 예약 시 함께 알려주세요.</p>
-      <p>방문 시에는 관리 도구와 소모품을 위생적으로 관리하고, 예약하신 시간과 관리 종류에 맞춰 진행합니다. 결제 방법은 예약 시 안내해 드리며, 추가 출장비가 있는 경우 미리 알려 드리므로 예상치 못한 비용이 청구되지 않습니다.</p>
-      <p>관리 전에는 가벼운 식사 후 1시간 이상 지난 상태가 편하고, 조용히 쉴 수 있는 공간이면 이완에 도움이 됩니다. 관리 후 수분을 충분히 섭취하면 개운함이 더 오래 유지됩니다. ${esc(a.name)} 방문과 관련해 궁금한 점은 예약 시 편하게 문의해 주세요.</p>`;
+      <p>예약 후 일정 변경이나 취소는 미리 연락 주시면 원활하게 조정됩니다. ${esc(SITE.brand)}는 건전한 휴식·컨디션 관리 범위로만 진행하며, 알레르기·임신·질환 등 사전에 알아야 할 사항이 있으면 예약 시 함께 알려주세요.</p>`;
+}
+// 지역 페이지용 압축 요금표 (코스 × 시간)
+function priceTableCompact(prefix) {
+  const cols = ["60분", "90분", "120분", "150분"];
+  const rows = PRICING.map((c) => {
+    const m = Object.fromEntries(c.rows);
+    return `<tr><th scope="row">${esc(c.name)}</th>` + cols.map((col) => `<td>${m[col] ? esc(m[col]) : "—"}</td>`).join("") + `</tr>`;
+  }).join("");
+  return `<div class="price-mini-wrap"><table class="price-mini"><thead><tr><th scope="col">코스</th>${cols.map((c) => `<th scope="col">${esc(c)}</th>`).join("")}</tr></thead><tbody>${rows}</tbody></table></div>
+      <p class="price-note">표시 금액(원)은 코스·시간 기준이며, 지역·거리·시간대에 따라 추가 출장비가 안내될 수 있습니다. 자세한 내용은 <a href="${prefix}pricing/index.html">요금 안내</a>에서 확인하세요.</p>`;
 }
 
 // ───────────────────────────────────────────────────────────────────────────
@@ -2691,6 +2702,9 @@ function buildAreasIndex() {
       <h2>지역 안내 페이지 구성</h2>
       <p>출장 가능 지역은 전국 14개 시도로 나뉩니다. 서울은 25개 구별로 권역 특성이 뚜렷해 구마다 안내 페이지를 따로 두었고, 경기·인천·부산·경상권은 생활권 차이가 큰 주요 도시·자치구를 개별 페이지로 구분했습니다. 각 페이지에는 권역별 생활권, 건물 유형, 이동·시간대 변수, 출장비 판단 기준, 추천 관리, 자주 묻는 질문이 지역 상황에 맞게 정리되어 있습니다. 아래에서 원하는 시도를 선택하면 세부 지역으로 이동할 수 있습니다.</p>
 
+      <h2>전국 공통 요금표</h2>
+      ${priceTableCompact("../")}
+
       <h2>시도별 안내 요약</h2>
       <ul class="doc-ul">
         ${REGIONS.map((r) => `<li><strong><a href="${r.slug}/index.html">${esc(r.name)}</a></strong> — ${esc(r.traits)}</li>`).join("\n        ")}
@@ -2725,7 +2739,7 @@ function buildRegionPage(r) {
   const subListTitle = isSeoul ? "서울 25개 구 안내" : `${r.name} 주요 지역 안내`;
   const subList = subs.length
     ? `<h2>${subListTitle}</h2>
-      <p>아래 지역은 생활권과 방문 환경이 서로 달라 개별 안내 페이지로 구분했습니다. 지역명을 누르면 권역별 상세 안내를 볼 수 있습니다.</p>
+      <p>아래 지역은 생활권과 방문 환경이 달라 개별 안내 페이지로 구분했습니다.</p>
       <div class="sub-grid">${subs.map((d) => `<a class="sub-card" href="${d.slug}/index.html"><span>${esc(d.name)}</span>${subs.length <= 8 ? `<small>${esc(d.dong)}</small>` : ""}</a>`).join("")}</div>`
     : "";
   const body = `${header(depth, { active: "areas" })}
@@ -2760,7 +2774,7 @@ function buildRegionPage(r) {
 
       ${subList}
 
-      ${situationSection(r)}
+      ${situationSection(r, "../../")}
 
       <h2>자주 묻는 질문</h2>
       <div class="faq">${faqHtml(mergedFaqs(r))}</div>
@@ -2823,7 +2837,7 @@ function buildSeoulDistrict(d) {
         <li>건전한 휴식 관리 범위로 진행하며, 부적절한 요구에는 응하지 않습니다.</li>
       </ul>
 
-      ${situationSection(d)}
+      ${situationSection(d, "../../../")}
 
       <h2>자주 묻는 질문</h2>
       <div class="faq">${faqHtml(mergedFaqs(d, true))}</div>
@@ -2880,7 +2894,7 @@ function buildSubArea(region, d) {
         <li>알레르기·임신·질환 등은 예약 시 미리 알려주세요.</li>
       </ul>
 
-      ${situationSection(d)}
+      ${situationSection(d, "../../../")}
 
       <h2>자주 묻는 질문</h2>
       <div class="faq">${faqHtml(mergedFaqs(d, true))}</div>
@@ -3036,6 +3050,15 @@ img{max-width:100%;display:block}
 .pc-rows strong{color:var(--gold-bright);font-weight:800}
 @media(max-width:920px){.price-cards{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:680px){.price-cards{grid-template-columns:1fr}}
+/* compact price table (지역 페이지) */
+.price-mini-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:12px;margin:6px 0 12px}
+.price-mini{width:100%;border-collapse:collapse;font-size:.92rem;min-width:460px}
+.price-mini th,.price-mini td{padding:11px 12px;text-align:right;border-bottom:1px solid var(--line)}
+.price-mini thead th{background:var(--panel);color:var(--gold-bright);font-weight:700;text-align:right}
+.price-mini thead th:first-child,.price-mini tbody th{text-align:left}
+.price-mini tbody th{color:var(--text);font-weight:700}
+.price-mini tbody td{color:var(--muted)}
+.price-mini tbody tr:last-child th,.price-mini tbody tr:last-child td{border-bottom:0}
 
 /* faq */
 .faq{max-width:820px}

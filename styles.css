@@ -124,6 +124,15 @@ img{max-width:100%;display:block}
 .pc-rows strong{color:var(--gold-bright);font-weight:800}
 @media(max-width:920px){.price-cards{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:680px){.price-cards{grid-template-columns:1fr}}
+/* compact price table (지역 페이지) */
+.price-mini-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:12px;margin:6px 0 12px}
+.price-mini{width:100%;border-collapse:collapse;font-size:.92rem;min-width:460px}
+.price-mini th,.price-mini td{padding:11px 12px;text-align:right;border-bottom:1px solid var(--line)}
+.price-mini thead th{background:var(--panel);color:var(--gold-bright);font-weight:700;text-align:right}
+.price-mini thead th:first-child,.price-mini tbody th{text-align:left}
+.price-mini tbody th{color:var(--text);font-weight:700}
+.price-mini tbody td{color:var(--muted)}
+.price-mini tbody tr:last-child th,.price-mini tbody tr:last-child td{border-bottom:0}
 
 /* faq */
 .faq{max-width:820px}
