@@ -337,6 +337,36 @@ function recItems(rec, prefix) {
     return `<li><a href="${prefix}services/${s.slug}/index.html">${esc(r.n)}</a> — ${esc(r.why)}</li>`;
   }).join("");
 }
+// ── 프리미엄 지역 페이지 UI 컴포넌트 ──
+function areaHero({ eyebrow, name, lead, dong, rec, bcHtml }) {
+  const dongChips = String(dong).split("·").slice(0, 4).map((t) => t.trim()).filter(Boolean).map((t) => `<span class="chip">${esc(t)}</span>`).join("");
+  const recChips = rec.map((r) => `<span class="chip chip-accent">${esc(r.n)}</span>`).join("");
+  return `<section class="area-hero">
+    <div class="container">
+      ${bcHtml}
+      <p class="area-hero-eyebrow">${esc(eyebrow)}</p>
+      <h1 class="area-hero-title">${esc(name)} 출장마사지</h1>
+      <p class="area-hero-lead">${esc(lead)}</p>
+      <div class="area-chips">${dongChips}${recChips}</div>
+      <div class="area-hero-cta">
+        <a class="btn btn-primary" href="tel:${SITE.phoneTel}">전화예약 ${esc(SITE.phone)}</a>
+        <a class="btn btn-ghost" href="sms:${SITE.phoneTel}">문자문의</a>
+      </div>
+    </div>
+  </section>`;
+}
+function zoneCards(zones) {
+  return `<div class="zone-cards">${zones.map((z) => `<div class="zone-card"><h3>${esc(z.n)}</h3><p>${esc(z.d)}</p></div>`).join("")}</div>`;
+}
+function recCards(rec, prefix) {
+  return `<div class="rec-cards">${rec.map((r) => {
+    const s = SERVICES.find((x) => x.name === r.n);
+    return `<a class="rec-card" href="${prefix}services/${s.slug}/index.html"><h3>${esc(r.n)}</h3><p>${esc(r.why)}</p><span class="rec-more">자세히 보기 →</span></a>`;
+  }).join("")}</div>`;
+}
+function infoPanel(items) {
+  return `<div class="info-panel">${items.map((it) => `<div class="info-card"><span class="info-label">${esc(it.label)}</span><p>${esc(it.text)}</p></div>`).join("")}</div>`;
+}
 // 지역의 고유 데이터(timing/fee/rec)로부터 지역별 고유 답변을 가진 추가 FAQ를 구성
 function areaExtraFaqs(a, leaf) {
   const recNames = a.rec.map((r) => r.n).join(", ");
@@ -368,7 +398,7 @@ function situationSection(a, prefix) {
       <h2>${esc(a.name)} 이용 상황과 예약 안내</h2>
       <p>${who}${esc(a.timing)}</p>
       <p>${esc(a.name)}에서는 ${esc(recNames)} 관리를 자주 찾습니다. 처음이라면 60분으로 전신을 가볍게 경험한 뒤, 충분한 이완이나 부위별 집중을 원할 때 90분 이상으로 늘리는 방식을 권합니다. 어떤 관리가 맞을지 고민되면 예약 시 컨디션을 알려주시면 ${esc(SITE.responsibleTeam)}이 추천해 드립니다.</p>
-      <p>${esc(a.name)} 방문 예약은 전화 ${esc(SITE.phone)} 또는 문자로 받습니다. ① 방문할 동과 건물 유형(아파트·오피스텔·숙소 등), ② 희망 날짜와 시간, ③ 원하는 관리 종류와 시간을 알려주시면 ${esc(a.name)} 기준 가능 시간과 출장비를 확인해 안내해 드립니다.</p>
+      <p>${esc(a.name)} 방문 예약은 전화 ${esc(SITE.phone)} 또는 문자로 받습니다. ① 방문할 동과 건물 유형, ② 희망 날짜와 시간, ③ 원하는 관리 종류와 시간을 알려주시면 가능 시간과 출장비를 안내해 드립니다.</p>
       <p>예약 후 일정 변경이나 취소는 미리 연락 주시면 원활하게 조정됩니다. ${esc(SITE.brand)}는 건전한 휴식·컨디션 관리 범위로만 진행하며, 알레르기·임신·질환 등 사전에 알아야 할 사항이 있으면 예약 시 함께 알려주세요.</p>`;
 }
 // 지역 페이지용 압축 요금표 (코스 × 시간)
@@ -707,9 +737,9 @@ const SERVICES = [
 const REGIONS = [
   { slug: "seoul", name: "서울",
     lead: "퇴근 이후 오피스텔·호텔 문의가 많아 공동현관·주차·프런트 규정 확인이 특히 중요한 지역입니다.",
-    intro2: "서울은 업무권과 주거권이 촘촘히 섞여 있어 같은 구 안에서도 권역마다 이용 상황이 크게 다릅니다. 강남·여의도처럼 업무 밀집 권역은 퇴근 이후와 심야 문의가 많고, 노원·양천처럼 대단지 주거권은 낮 시간 가족 단위 문의가 많습니다.",
-    traits: "25개 구가 각각 다른 생활권을 가지고 있어, 코코마사지는 구별 안내 페이지를 따로 두고 권역별 확인 사항을 구분합니다.",
-    move: "지하철 접근성은 좋지만 퇴근 시간대 도심 정체가 변수라, 정확한 위치와 희망 시간을 알려주시면 가능 시간을 맞추기 쉽습니다.",
+    intro2: "서울은 업무권과 주거권이 촘촘히 섞여 있어 같은 구 안에서도 권역마다 이용 상황이 크게 다릅니다. 업무 밀집 권역은 퇴근 이후·심야 문의가, 대단지 주거권은 낮 시간 문의가 많습니다.",
+    traits: "25개 구가 각각 다른 생활권을 가져, 구별 안내 페이지에서 권역별 확인 사항을 구분합니다.",
+    move: "지하철 접근성은 좋지만 퇴근 시간대 도심 정체가 변수라, 정확한 위치와 희망 시간을 알려주시면 좋습니다.",
     zones: [
       { n: "동남권(강남·서초·송파)", d: "업무 오피스텔과 대단지 주거가 함께 있어 퇴근 후·주거권 문의가 모두 많은 권역" },
       { n: "도심권(중구·종로·용산)", d: "호텔과 오피스권이 밀집해 프런트 방문객 규정 확인이 중요한 권역" },
@@ -2746,30 +2776,25 @@ function buildRegionPage(r) {
     : "";
   const body = `${header(depth, { active: "areas" })}
 <main id="main">
-  <div class="container">
-    ${bc.html}
+  ${areaHero({ eyebrow: "전국 출장 웰니스 관리", name: r.name, lead: r.lead, dong: zoneR.join("·"), rec: r.rec, bcHtml: bc.html })}
+  <div class="container area-body">
     <article class="doc">
-      <h1>${esc(r.name)} 출장마사지 서비스 안내</h1>
-      <p class="doc-lead">${esc(r.lead)}</p>
-
       <h2>${esc(r.name)} 출장마사지 이용 안내</h2>
       <p>${esc(r.intro2)}</p>
       <p>${esc(r.traits)} ${esc(r.move)}.</p>
 
       <h2>권역·도시별 안내</h2>
-      <ul class="doc-ul">${zoneItems(r.zones)}</ul>
+      ${zoneCards(r.zones)}
 
-      <h2>방문 시 확인할 점</h2>
-      <p>${esc(r.building)} ${esc(r.parking)}</p>
-
-      <h2>이동·시간대 안내</h2>
-      <p>${esc(r.timing)}</p>
-
-      <h2>출장비 판단 기준</h2>
-      <p>${esc(r.fee)}</p>
+      <h2>방문·이동·요금 기준</h2>
+      ${infoPanel([
+        { label: "방문 확인", text: `${r.building} ${r.parking}` },
+        { label: "이동·시간대", text: r.timing },
+        { label: "출장비 기준", text: r.fee },
+      ])}
 
       <h2>추천 관리</h2>
-      <ul class="doc-ul">${recItems(r.rec, prefix)}</ul>
+      ${recCards(r.rec, prefix)}
 
       <h2>예약 전 확인사항</h2>
       <ul class="doc-ul">${listItems(r.tips)}<li>알레르기·임신·질환 등 사전에 알아야 할 사항을 미리 알려주세요.</li></ul>
@@ -2805,38 +2830,30 @@ function buildSeoulDistrict(d) {
   const jsonLd = [bc.ld, serviceJsonLd({ name: `${d.name} 출장마사지`, description: d.profile, areaName: `서울 ${d.name}`, url: "/" + p }), faqJsonLd(mergedFaqs(d, true))];
   const body = `${header(depth, { active: "areas" })}
 <main id="main">
-  <div class="container">
-    ${bc.html}
+  ${areaHero({ eyebrow: "서울특별시 출장 관리", name: d.name, lead: `${d.name}는 ${d.profile}입니다.`, dong: d.dong, rec: d.rec, bcHtml: bc.html })}
+  <div class="container area-body">
     <article class="doc">
-      <h1>${esc(d.name)} 출장마사지 서비스 안내</h1>
-      <p class="doc-lead">${esc(d.name)}는 ${esc(d.profile)}입니다. 주요 생활권은 ${esc(d.dong)} 일대입니다.</p>
-
       <h2>${esc(d.name)} 출장마사지 이용 안내</h2>
       <p>${esc(d.intro2)}</p>
       <p>주로 ${esc(d.customer)}의 문의가 많으며, 같은 ${esc(d.name)} 안에서도 권역마다 방문 환경이 달라 위치를 먼저 확인합니다.</p>
 
       <h2>주요 권역별 안내</h2>
-      <ul class="doc-ul">${zoneItems(d.zones)}</ul>
+      ${zoneCards(d.zones)}
 
-      <h2>방문 시 확인할 점</h2>
-      <p>${esc(d.building)} ${esc(d.parking)}</p>
+      <h2>방문·이동·요금 기준</h2>
+      ${infoPanel([
+        { label: "방문 확인", text: `${d.building} ${d.parking}` },
+        { label: "이동·시간대", text: d.timing },
+        { label: "출장비 기준", text: d.fee },
+      ])}
+
+      <h2>이용 가능한 관리</h2>
+      ${recCards(d.rec, prefix)}
+
+      <h2>예약 전 확인사항</h2>
       <ul class="doc-ul">
         <li>공동현관 출입 방법, 주차 가능 여부, 프런트 방문객 규정을 미리 확인합니다.</li>
         <li>희망 시간대와 정확한 위치(동·건물 유형)를 알려주시면 가능 시간을 안내합니다.</li>
-      </ul>
-
-      <h2>이동·시간대 안내</h2>
-      <p>${esc(d.timing)}</p>
-
-      <h2>출장비 판단 기준</h2>
-      <p>${esc(d.fee)}</p>
-
-      <h2>이용 가능한 관리</h2>
-      <ul class="doc-ul">${recItems(d.rec, prefix)}</ul>
-
-      <h2>이용 전 준비사항</h2>
-      <ul class="doc-ul">
-        <li>가벼운 식사 후 1시간 이상 지난 상태가 편합니다.</li>
         <li>알레르기·임신·질환 등은 예약 시 미리 알려주세요.</li>
         <li>건전한 휴식 관리 범위로 진행하며, 부적절한 요구에는 응하지 않습니다.</li>
       </ul>
@@ -2868,30 +2885,25 @@ function buildSubArea(region, d) {
   const jsonLd = [bc.ld, serviceJsonLd({ name: `${d.name} 출장마사지`, description: d.profile, areaName: `${region.name} ${d.name}`, url: "/" + p }), faqJsonLd(mergedFaqs(d, true))];
   const body = `${header(depth, { active: "areas" })}
 <main id="main">
-  <div class="container">
-    ${bc.html}
+  ${areaHero({ eyebrow: `${region.name} 출장 관리`, name: d.name, lead: `${d.name}는 ${d.profile}입니다.`, dong: d.dong, rec: d.rec, bcHtml: bc.html })}
+  <div class="container area-body">
     <article class="doc">
-      <h1>${esc(d.name)} 출장마사지 서비스 안내</h1>
-      <p class="doc-lead">${esc(d.name)}는 ${esc(d.profile)}입니다. 주요 생활권은 ${esc(d.dong)}으로 나뉩니다.</p>
-
       <h2>${esc(d.name)} 이용 안내</h2>
       <p>${esc(d.intro2)}</p>
       <p>권역에 따라 방문 환경과 이동 시간이 달라, 위치를 먼저 확인합니다.</p>
 
       <h2>주요 권역별 안내</h2>
-      <ul class="doc-ul">${zoneItems(d.zones)}</ul>
+      ${zoneCards(d.zones)}
 
-      <h2>방문 시 확인할 점</h2>
-      <p>${esc(d.building)} ${esc(d.parking)}</p>
-
-      <h2>이동·시간대 안내</h2>
-      <p>${esc(d.move)}. ${esc(d.timing)} 정확한 위치와 희망 시간을 알려주시면 가능 시간과 출장비를 사전에 안내해 드립니다.</p>
-
-      <h2>출장비 판단 기준</h2>
-      <p>${esc(d.fee)}</p>
+      <h2>방문·이동·요금 기준</h2>
+      ${infoPanel([
+        { label: "방문 확인", text: `${d.building} ${d.parking}` },
+        { label: "이동·시간대", text: `${d.move}. ${d.timing}` },
+        { label: "출장비 기준", text: d.fee },
+      ])}
 
       <h2>이용 가능한 관리</h2>
-      <ul class="doc-ul">${recItems(d.rec, prefix)}</ul>
+      ${recCards(d.rec, prefix)}
 
       <h2>예약 전 확인사항</h2>
       <ul class="doc-ul">
@@ -3065,6 +3077,36 @@ img{max-width:100%;display:block}
 .price-mini tbody th{color:var(--text);font-weight:700}
 .price-mini tbody td{color:var(--muted)}
 .price-mini tbody tr:last-child th,.price-mini tbody tr:last-child td{border-bottom:0}
+
+/* ── premium 지역 페이지 ── */
+.area-hero{position:relative;background:radial-gradient(130% 120% at 85% -20%,rgba(224,168,120,.22),transparent 55%),linear-gradient(180deg,#15110f,var(--bg));border-bottom:1px solid var(--line);padding:22px 0 46px}
+.area-hero .breadcrumb{margin:0}
+.area-hero-eyebrow{color:var(--gold);letter-spacing:.16em;font-size:.78rem;text-transform:uppercase;margin:16px 0 10px}
+.area-hero-title{font-size:clamp(1.9rem,4.5vw,3rem);font-weight:800;margin:0 0 14px;line-height:1.2}
+.area-hero-lead{color:var(--muted);max-width:680px;font-size:1.05rem;margin:0 0 20px}
+.area-chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:26px}
+.chip{font-size:.82rem;color:var(--muted);background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:999px;padding:6px 14px}
+.chip-accent{color:#1a1410;background:linear-gradient(135deg,var(--gold-bright),var(--gold));border-color:transparent;font-weight:700}
+.area-hero-cta{display:flex;gap:12px;flex-wrap:wrap}
+.area-body{padding-top:46px;padding-bottom:8px}
+.area-body .doc{max-width:880px;margin:0 auto}
+.area-body .doc h2:first-of-type{border-top:0;padding-top:0}
+.zone-cards{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin:6px 0 8px}
+.zone-card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:18px 20px;border-left:3px solid var(--gold)}
+.zone-card h3{margin:0 0 6px;font-size:1.02rem;color:var(--gold-bright)}
+.zone-card p{margin:0;color:var(--muted);font-size:.92rem}
+.info-panel{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:6px 0 8px}
+.info-card{background:var(--bg-alt);border:1px solid var(--line);border-radius:12px;padding:18px 20px}
+.info-label{display:inline-block;font-size:.74rem;letter-spacing:.08em;color:var(--gold);text-transform:uppercase;margin-bottom:8px;font-weight:700}
+.info-card p{margin:0;color:var(--muted);font-size:.9rem;line-height:1.6}
+.rec-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:6px 0 8px}
+.rec-card{display:flex;flex-direction:column;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:20px;transition:.15s}
+.rec-card:hover{border-color:var(--gold);transform:translateY(-2px)}
+.rec-card h3{margin:0 0 8px;font-size:1.1rem;color:var(--gold-bright)}
+.rec-card p{margin:0 0 14px;color:var(--muted);font-size:.9rem;flex:1}
+.rec-more{color:var(--gold);font-size:.86rem;font-weight:700}
+@media(max-width:920px){.info-panel,.rec-cards,.zone-cards{grid-template-columns:1fr}}
+@media(max-width:680px){.area-body{padding-top:32px}.area-hero{padding:18px 0 36px}}
 
 /* faq */
 .faq{max-width:820px}
