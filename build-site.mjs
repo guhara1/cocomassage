@@ -284,6 +284,7 @@ function serviceJsonLd({ name, description, areaName, url }) {
     serviceType: name,
     name,
     description,
+    image: abs("/assets/og-image.svg"),
     url: abs(url),
     areaServed: areaName || "대한민국",
     provider: {
@@ -2606,6 +2607,8 @@ function buildPolicy() {
       <p>개인정보 및 약관 관련 문의는 전화 ${esc(SITE.phone)} 또는 문자로 보내주시면 확인 후 안내해 드립니다. 개인정보 보호 책임은 ${esc(SITE.company)}(대표 ${esc(SITE.ceo)})가 부담합니다.</p>
 
       <p class="doc-meta">시행일: ${esc(SITE.buildDate)} · 운영: ${esc(SITE.company)} (대표 ${esc(SITE.ceo)}) · 사업자등록번호 ${esc(SITE.bizNo)}</p>
+
+      ${authorBlock("본 약관·방침은 관련 법령과 실제 운영 기준에 따라 작성·검수했습니다.")}
     </article>
   </div>
 </main>
@@ -2880,6 +2883,7 @@ function buildServicesIndex() {
     <div class="card-grid">
       ${SERVICES.map((s) => `<a class="svc-card" href="${s.slug}/index.html"><h2>${esc(s.name)}</h2><p>${esc(s.short)}</p><span class="card-more">자세히 보기 →</span></a>`).join("\n      ")}
     </div>
+    ${authorBlock("서비스 분류와 추천 기준은 실제 예약·출장 상담 경험을 바탕으로 작성·검수했습니다.")}
   </div>
   ${reserveBlock(depth)}
 </main>
@@ -2986,12 +2990,13 @@ function buildAreasIndex() {
       <ul class="doc-ul">
         ${REGIONS.map((r) => `<li><strong><a href="${r.slug}/index.html">${esc(r.name)}</a></strong> — ${esc(r.traits)}</li>`).join("\n        ")}
       </ul>
-      <p>찾으시는 지역이 목록에 보이지 않더라도, 전화 ${esc(SITE.phone)} 또는 문자로 위치를 알려주시면 방문 가능 여부와 가능 시간을 확인해 안내해 드립니다. 지역과 거리, 시간대에 따라 출장비가 달라질 수 있으며 발생 시 사전에 안내합니다.</p>
+      <p>찾으시는 지역이 목록에 없더라도 전화 ${esc(SITE.phone)} 또는 문자로 위치를 알려주시면 방문 가능 여부를 확인해 드리며, 거리·시간대에 따른 출장비는 사전에 안내합니다.</p>
     </article>
 
     <div class="area-grid area-grid-lg">
       ${REGIONS.map((r) => `<a class="area-card" href="${r.slug}/index.html"><span>${esc(r.name)}</span><small>${esc(r.lead.split(".")[0])}</small></a>`).join("\n      ")}
     </div>
+    ${authorBlock("지역 구분과 권역별 확인 사항은 실제 출장 상담 경험을 바탕으로 작성·검수했습니다.")}
   </div>
   ${reserveBlock(depth)}
 </main>
