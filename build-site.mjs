@@ -24,7 +24,6 @@ const SITE = {
   address: "경기도 파주시 청석로 268",
   phone: "0508-202-4717",
   phoneTel: "050882024717",
-  email: "88smartbro88@gmail.com",
   responsibleTeam: "코코마사지 운영팀",
   // 검색엔진 인증 태그 (실제 발급값으로 교체)
   googleVerification: "GOOGLE_SITE_VERIFICATION_TOKEN",
@@ -266,7 +265,6 @@ function orgJsonLd() {
     legalName: SITE.company,
     url: SITE.url,
     telephone: SITE.phone,
-    email: SITE.email,
     image: abs("/assets/og-image.svg"),
     logo: abs("/assets/favicon.svg"),
     address: {
@@ -2016,6 +2014,41 @@ const REGION_NAME = Object.fromEntries(REGIONS.map((r) => [r.slug, r.name]));
 
 
 // ───────────────────────────────────────────────────────────────────────────
+// 7-2. 데이터: 요금표 (코스별 시간·가격)
+// ───────────────────────────────────────────────────────────────────────────
+const PRICING = [
+  { eyebrow: "DRY · 건식", name: "타이 건식", desc: "옷 위에서 진행하는 정통 건식 케어. 깊은 압과 관절 가동 범위 확장으로 일과의 긴장을 해체합니다.", rows: [["60분", "80,000"], ["90분", "100,000"], ["120분", "120,000"]] },
+  { eyebrow: "WET · 오일", name: "아로마 습식", desc: "엄선된 에센셜 오일이 흐르는 손길. 후각과 촉각이 함께 전환되는 감각의 휴식.", rows: [["60분", "90,000"], ["90분", "110,000"], ["120분", "130,000"]] },
+  { eyebrow: "SIGNATURE · 오일", name: "감성케어 오일", desc: "강도보다 호흡에 맞추는 손길. 차분한 압으로 신경을 진정시키는 시그니처 오일 케어.", rows: [["60분", "100,000"], ["90분", "120,000"], ["120분", "140,000"]] },
+  { eyebrow: "VVIP · 풀바디", name: "VVIP 전신케어", badge: "BEST", desc: "건식과 오일이 한 코스에. 발끝부터 두피까지 단절 없이 이어지는 풀바디 시그니처.", rows: [["60분", "110,000"], ["90분", "130,000"], ["120분", "150,000"], ["150분", "180,000"]] },
+  { eyebrow: "KOREAN · 매니저 지정", name: "한국인 스웨디시", desc: "한국인 매니저 지정 매칭. 섬세한 강도 조절과 또렷한 의사소통을 함께 약속합니다.", rows: [["60분", "150,000"], ["90분", "190,000"]] },
+  { eyebrow: "MEN · 남성 전용", name: "남성 스웨디시", desc: "남성 고객을 위한 전담 매니저 배치. 사전 통화로 컨디션과 강도를 함께 정한 뒤 출발합니다.", rows: [["60분", "100,000"], ["90분", "130,000"], ["120분", "160,000"]] },
+];
+function priceCardsHtml() {
+  return `<div class="price-cards">
+${PRICING.map((c) => `      <div class="price-card">
+        <p class="pc-eyebrow">${esc(c.eyebrow)}${c.badge ? `<span class="pc-badge">${esc(c.badge)}</span>` : ""}</p>
+        <h3 class="pc-name">${esc(c.name)}</h3>
+        <p class="pc-desc">${esc(c.desc)}</p>
+        <ul class="pc-rows">${c.rows.map(([d, pr]) => `<li><span>${esc(d)}</span><strong>${esc(pr)} 원</strong></li>`).join("")}</ul>
+      </div>`).join("\n")}
+    </div>`;
+}
+// 요금 구조화 데이터 (코스별 Offer)
+function pricingJsonLd() {
+  return PRICING.map((c) => ({
+    "@context": "https://schema.org",
+    "@type": "Service",
+    serviceType: c.name,
+    name: c.name,
+    description: c.desc,
+    provider: { "@type": "Organization", name: SITE.brand, telephone: SITE.phone, url: SITE.url },
+    areaServed: "대한민국",
+    offers: c.rows.map(([d, pr]) => ({ "@type": "Offer", name: `${c.name} ${d}`, priceCurrency: "KRW", price: pr.replace(/,/g, ""), description: `${d} 기준` })),
+  }));
+}
+
+// ───────────────────────────────────────────────────────────────────────────
 // 8. 페이지 생성: 메인
 // ───────────────────────────────────────────────────────────────────────────
 function buildIndex() {
@@ -2076,7 +2109,15 @@ function buildIndex() {
     </div>
   </section>
 
-  <section id="areas" class="section" aria-labelledby="area-h">
+  <section id="pricing" class="section" aria-labelledby="price-h">
+    <div class="container">
+      <h2 id="price-h" class="section-title">요금표</h2>
+      <p class="section-lead">코스별·시간별 요금입니다. 지역·거리·시간대에 따라 추가 출장비가 안내될 수 있으며, 자세한 기준은 <a href="pricing/index.html">요금 안내</a> 페이지에서 확인하세요.</p>
+      ${priceCardsHtml()}
+    </div>
+  </section>
+
+  <section id="areas" class="section section-alt" aria-labelledby="area-h">
     <div class="container">
       <h2 id="area-h" class="section-title">출장 가능 지역</h2>
       <p class="section-lead">전국 시도 단위로 안내합니다. 지역별 생활권과 방문 시 확인사항이 다르므로 해당 지역 페이지에서 확인해 주세요.</p>
@@ -2102,14 +2143,14 @@ function buildIndex() {
     <div class="container">
       <h2 id="first-h" class="section-title">출장마사지를 처음 이용한다면</h2>
       <p class="section-lead">방문 관리는 처음이면 무엇을 준비해야 할지 막막할 수 있습니다. 코코마사지는 어렵지 않게 이용하실 수 있도록 예약 단계에서 필요한 것을 함께 정리해 드립니다.</p>
-      <p>먼저 전화나 문자로 <strong>방문할 지역과 건물 유형, 희망 시간, 원하는 관리 종류</strong>를 알려주시면 됩니다. 그러면 가능한 시간과 요금, 추가 출장비가 있는지 미리 안내해 드립니다. 관리 종류를 정하지 못하셨다면 평소 컨디션(어깨가 무겁다, 다리가 붓는다, 푹 쉬고 싶다 등)을 말씀해 주시면 그에 맞는 관리를 추천해 드립니다. 방문 시에는 편하게 쉴 수 있는 공간만 있으면 충분하며, 가벼운 식사 후 한 시간 정도 지난 상태가 가장 편안합니다. 관리 중에는 압이 세거나 약하면 언제든 말씀해 주세요. 통증을 참아야 하는 관리는 진행하지 않습니다.</p>
+      <p>먼저 전화나 문자로 <strong>방문할 지역과 건물 유형, 희망 시간, 원하는 관리 종류</strong>를 알려주시면 가능한 시간과 요금, 추가 출장비가 있는지 미리 안내해 드립니다. 관리 종류를 정하지 못하셨다면 평소 컨디션(어깨가 무겁다, 다리가 붓는다, 푹 쉬고 싶다 등)을 말씀해 주시면 그에 맞는 관리를 추천해 드립니다. 방문 시에는 편하게 쉴 수 있는 공간만 있으면 충분하며, 관리 중 압이 세거나 약하면 언제든 말씀해 주세요. 통증을 참아야 하는 관리는 진행하지 않습니다.</p>
     </div>
   </section>
 
   <section class="section section-alt" aria-labelledby="promise-h">
     <div class="container">
       <h2 id="promise-h" class="section-title">안심하고 이용하도록, 코코마사지의 약속</h2>
-      <p>출장마사지는 낯선 사람이 내 공간을 방문하는 서비스인 만큼 신뢰가 가장 중요합니다. 코코마사지는 표시된 상호·연락처·주소를 사업자등록 정보와 일치시키고, 예약 단계에서 가능 시간과 요금을 투명하게 안내해 예상치 못한 비용이 발생하지 않도록 합니다. 관리사는 지역과 시간, 요청하신 관리 종류를 고려해 배정하며 위생과 응대 기준을 준수합니다. 또한 본 서비스는 휴식과 컨디션 관리를 돕는 웰니스 관리로, 질병의 진단·치료·예방을 목적으로 하는 의료 행위가 아니며 효과를 과장하지 않습니다. 건전한 관리 범위에서만 진행하고, 부적절한 요구에는 응하지 않습니다.</p>
+      <p>출장마사지는 낯선 사람이 내 공간을 방문하는 서비스인 만큼 신뢰가 가장 중요합니다. 코코마사지는 표시된 상호·연락처·주소를 사업자등록 정보와 일치시키고, 예약 단계에서 가능 시간과 요금을 투명하게 안내합니다. 본 서비스는 휴식과 컨디션 관리를 돕는 웰니스 관리로, 의료 행위가 아니며 효과를 과장하지 않습니다. 건전한 관리 범위에서만 진행하고, 부적절한 요구에는 응하지 않습니다.</p>
     </div>
   </section>
 
@@ -2183,13 +2224,13 @@ function buildAbout() {
       <p><strong>효과를 보장하나요?</strong><br>코코마사지는 휴식과 컨디션 관리를 돕는 웰니스 관리로, 질병의 치료나 특정 효과를 보장하지 않습니다. 사실에 근거해 안내하며 과장된 표현을 사용하지 않습니다.</p>
 
       <h2>응대 및 위생 기준</h2>
-      <p>방문 시에는 정해진 예약 시간과 관리 종류에 맞춰 응대하며, 관리 도구와 소모품은 위생적으로 관리합니다. 관리사는 지역과 시간, 요청하신 관리 종류를 고려해 배정하고, 응대 기준을 준수합니다. 이용자가 불편을 느끼거나 안내와 다른 점이 있으면 ${esc(SITE.phone)} 또는 ${esc(SITE.email)}로 알려주시면 확인 후 조치합니다.</p>
+      <p>방문 시에는 정해진 예약 시간과 관리 종류에 맞춰 응대하며, 관리 도구와 소모품은 위생적으로 관리합니다. 관리사는 지역과 시간, 요청하신 관리 종류를 고려해 배정하고, 응대 기준을 준수합니다. 이용자가 불편을 느끼거나 안내와 다른 점이 있으면 전화 ${esc(SITE.phone)} 또는 문자로 알려주시면 확인 후 조치합니다.</p>
 
       <h2>표시 정보의 정확성</h2>
       <p>본 사이트에 표시된 상호(${esc(SITE.brand)}), 회사명(${esc(SITE.company)}), 대표자(${esc(SITE.ceo)}), 사업자등록번호(${esc(SITE.bizNo)}), 주소(${esc(SITE.address)}), 연락처(${esc(SITE.phone)})는 사업자등록 정보와 일치합니다. 정보가 변경되면 사이트 전반에 일관되게 반영하며, 모든 페이지 하단에서 동일하게 확인하실 수 있습니다.</p>
 
       <h2>연락처</h2>
-      <p>예약과 문의는 전화 <a href="tel:${SITE.phoneTel}">${esc(SITE.phone)}</a> 또는 문자로 받습니다. 콘텐츠나 개인정보 관련 문의는 ${esc(SITE.email)}로 보내주시면 확인 후 안내해 드립니다.</p>
+      <p>예약과 문의는 전화 <a href="tel:${SITE.phoneTel}">${esc(SITE.phone)}</a> 또는 문자로 받습니다. 콘텐츠나 개인정보 관련 문의도 전화나 문자로 주시면 확인 후 안내해 드립니다.</p>
 
       ${authorBlock()}
     </article>
@@ -2237,7 +2278,7 @@ function buildPolicy() {
       <p>법령에 근거가 있거나 이용자가 동의한 경우를 제외하고, 수집한 개인정보를 제3자에게 제공하지 않습니다. 위탁이 필요한 경우 위탁 대상과 범위를 사전에 안내합니다.</p>
 
       <h2>5. 이용자 권리와 행사 방법</h2>
-      <p>이용자는 본인 개인정보의 열람·정정·삭제·처리정지를 요청할 수 있습니다. 요청은 ${esc(SITE.email)} 또는 ${esc(SITE.phone)}로 접수해 주시면 지체 없이 처리합니다.</p>
+      <p>이용자는 본인 개인정보의 열람·정정·삭제·처리정지를 요청할 수 있습니다. 요청은 전화 ${esc(SITE.phone)} 또는 문자로 접수해 주시면 지체 없이 처리합니다.</p>
 
       <h2>6. 면책 및 유의사항</h2>
       <ul class="doc-ul">
@@ -2271,10 +2312,10 @@ function buildPolicy() {
       <p>이용자는 예약 과정에서 허위 정보를 제공하거나, 관리사에게 건전한 관리 범위를 벗어난 부적절한 요구를 해서는 안 됩니다. 이러한 행위가 확인될 경우 서비스 제공이 즉시 중단될 수 있으며, 이후 예약 안내가 제한될 수 있습니다. 코코마사지는 관리사와 이용자 모두가 안전하고 존중받는 환경에서 서비스가 이루어지도록 노력합니다.</p>
 
       <h2>15. 게시 정보와 책임</h2>
-      <p>본 사이트에 게시된 서비스·지역 안내는 일반적인 이용 안내를 위한 정보이며, 실제 가능 시간·요금·방문 조건은 예약 시점의 상황에 따라 달라질 수 있습니다. 게시된 내용과 실제 안내가 다를 경우 예약 시 안내되는 내용이 우선합니다.</p>
+      <p>본 사이트에 게시된 서비스·지역·요금 안내는 일반적인 이용 안내를 위한 정보이며, 실제 가능 시간·요금·방문 조건은 예약 시점의 상황에 따라 달라질 수 있습니다. 게시된 요금표는 코스·시간별 기준 금액으로, 지역·거리·시간대에 따른 추가 출장비는 예약 단계에서 별도로 안내됩니다. 게시된 내용과 실제 안내가 다를 경우 예약 시 안내되는 내용이 우선합니다.</p>
 
       <h2>16. 문의</h2>
-      <p>개인정보 및 약관 관련 문의는 ${esc(SITE.email)} 또는 ${esc(SITE.phone)}로 보내주시면 확인 후 안내해 드립니다. 개인정보 보호 책임은 ${esc(SITE.company)}(대표 ${esc(SITE.ceo)})가 부담합니다.</p>
+      <p>개인정보 및 약관 관련 문의는 전화 ${esc(SITE.phone)} 또는 문자로 보내주시면 확인 후 안내해 드립니다. 개인정보 보호 책임은 ${esc(SITE.company)}(대표 ${esc(SITE.ceo)})가 부담합니다.</p>
 
       <p class="doc-meta">시행일: ${esc(SITE.buildDate)} · 운영: ${esc(SITE.company)} (대표 ${esc(SITE.ceo)}) · 사업자등록번호 ${esc(SITE.bizNo)}</p>
     </article>
@@ -2363,7 +2404,7 @@ function buildHow() {
       <p>어떤 관리를 받을지 정하지 못하셨다면 예약 시 평소 컨디션을 말씀해 주세요. 전신을 부드럽게 풀고 싶다면 스웨디시, 어깨·목처럼 뭉친 부위를 시원하게 풀고 싶다면 딥티슈, 향과 분위기로 마음까지 가라앉히고 싶다면 아로마테라피가 잘 맞습니다. 오일 사용이 부담스러우면 스트레칭 중심의 타이마사지를, 다리가 붓고 무거운 느낌이라면 자극이 적은 림프마사지를 권합니다. 운동 후 회복이 목적이라면 스포츠마사지가 적합합니다. 관리별 자세한 특징은 <a href="../services/index.html">서비스 안내</a>에서 확인하실 수 있습니다.</p>
 
       <h2>관리 후 마무리</h2>
-      <p>관리가 끝나면 잠시 휴식하며 수분을 충분히 섭취하는 것이 좋습니다. 깊게 풀어 준 부위는 다음 날 가벼운 뻐근함이 있을 수 있으나 보통 하루 이틀이면 가라앉습니다. 이용 후 불편한 점이나 안내와 다른 점이 있으면 ${esc(SITE.phone)} 또는 ${esc(SITE.email)}로 알려주시면 확인 후 안내해 드립니다.</p>
+      <p>관리가 끝나면 잠시 휴식하며 수분을 충분히 섭취하는 것이 좋습니다. 깊게 풀어 준 부위는 다음 날 가벼운 뻐근함이 있을 수 있으나 보통 하루 이틀이면 가라앉습니다. 이용 후 불편한 점이나 안내와 다른 점이 있으면 전화 ${esc(SITE.phone)} 또는 문자로 알려주시면 확인 후 안내해 드립니다.</p>
 
       <h2>방문 유의사항</h2>
       <p>코코마사지는 휴식과 컨디션 관리를 위한 건전한 웰니스 관리만 제공하며, 부적절한 요구에는 응하지 않습니다. 안전하고 서로 존중하는 환경에서 관리가 이루어지도록 운영하며, 안내와 다른 점이 있으면 ${esc(SITE.phone)}로 알려주시면 확인 후 조치합니다.</p>
@@ -2382,7 +2423,7 @@ function buildPricing() {
   const depth = 1;
   const p = "pricing/";
   const title = `요금 안내 | ${SITE.brand} 출장마사지`;
-  const description = `${SITE.brand} 출장마사지 요금 안내. 60·90·120분 시간별 구성과 추가 출장비가 적용되는 기준, 결제·환불 방식을 투명하게 안내합니다.`;
+  const description = `${SITE.brand} 출장마사지 요금표. 타이 건식·아로마 습식·감성케어 오일·VVIP 전신케어·한국인/남성 스웨디시 코스별 60·90·120분 요금과 추가 출장비 기준을 안내합니다.`;
   const bc = breadcrumb([{ name: "홈", path: "/" }, { name: "요금 안내" }], depth);
   const body = `${header(depth, { active: "pricing" })}
 <main id="main">
@@ -2390,15 +2431,11 @@ function buildPricing() {
     ${bc.html}
     <article class="doc">
       <h1>요금 안내</h1>
-      <p class="doc-lead">코코마사지는 예약 단계에서 요금과 추가 출장비를 먼저 안내해, 예상치 못한 비용이 발생하지 않도록 합니다. 아래는 시간 기준의 일반 안내이며, 정확한 금액은 방문 지역과 시간대를 확인한 뒤 예약 시 안내해 드립니다.</p>
+      <p class="doc-lead">코코마사지는 예약 단계에서 요금과 추가 출장비를 먼저 안내해, 예상치 못한 비용이 발생하지 않도록 합니다. 아래는 코스별·시간별 요금표이며, 표시된 금액 외에 지역·거리·시간대에 따라 추가 출장비가 안내될 수 있습니다.</p>
 
-      <h2>시간별 구성 안내</h2>
-      <div class="price-table" role="table" aria-label="시간별 요금 안내">
-        <div class="price-row price-head" role="row"><span role="columnheader">관리 시간</span><span role="columnheader">기준 안내</span></div>
-        <div class="price-row" role="row"><span role="cell">60분</span><span role="cell">전신 흐름을 가볍게 경험하거나 특정 부위를 집중하기 좋은 기본 구성</span></div>
-        <div class="price-row" role="row"><span role="cell">90분</span><span role="cell">전신을 충분히 이완하고 불편한 부위까지 다루는 구성</span></div>
-        <div class="price-row" role="row"><span role="cell">120분</span><span role="cell">전신과 집중 부위를 여유 있게 다루고 마무리까지 받는 구성</span></div>
-      </div>
+      <h2>코스별 요금표</h2>
+      <p>코스와 관리 시간에 따라 요금이 다릅니다. 어떤 코스가 맞을지 모르시면 예약 시 컨디션을 알려주시면 추천해 드립니다.</p>
+      ${priceCardsHtml()}
 
       <h2>관리 시간은 어떻게 고르나요</h2>
       <p>같은 관리라도 시간에 따라 받는 느낌이 다릅니다. 처음 이용하신다면 60분으로 전신 흐름을 경험한 뒤, 다음 방문에서 90분 이상으로 시간을 늘려 자신에게 맞는 구성을 찾는 것을 권합니다. 어깨·목처럼 특정 부위가 많이 뭉쳐 있다면 60분으로 집중 관리가 가능하고, 전신을 충분히 풀면서 마무리까지 여유 있게 받고 싶다면 120분이 적합합니다. 관리 종류별 추천 시간은 <a href="../services/index.html">서비스 안내</a>에서 확인하실 수 있습니다.</p>
@@ -2417,12 +2454,6 @@ function buildPricing() {
 
       <h2>환불·변경 기준</h2>
       <p>예약 변경이나 취소는 예약하신 연락처로 미리 알려주시면 원활하게 조정해 드립니다. 방문이 임박한 시점의 무단 취소가 반복될 경우 이후 예약 안내가 제한될 수 있습니다. 자세한 절차는 <a href="../how/index.html">이용 방법</a>의 취소·환불 안내에서 확인하실 수 있습니다.</p>
-
-      <h2>관리 종류별 추천 시간</h2>
-      <p>관리 종류에 따라 적당한 시간이 조금씩 다릅니다. 아래를 참고해 시간을 선택하시면 됩니다.</p>
-      <ul class="doc-ul">
-        ${SERVICES.map((s) => `<li><strong><a href="../services/${s.slug}/index.html">${esc(s.name)}</a></strong> — ${esc(s.times)}</li>`).join("\n        ")}
-      </ul>
 
       <h2>방문 가능 시간대</h2>
       <p>방문 가능 시간은 지역과 예약 상황에 따라 달라집니다. 퇴근 이후 시간대(오후 6~9시)와 주말, 관광 성수기에는 예약이 몰려 원하는 시간이 빠르게 마감될 수 있으니 여유 있게 연락 주시면 조율이 수월합니다. 심야 시간대는 가능 여부와 이동 조건이 달라질 수 있어 사전에 확인해 안내해 드립니다.</p>
@@ -2443,7 +2474,7 @@ function buildPricing() {
   ${reserveBlock(depth)}
 </main>
 ${footer(depth)}`;
-  writeFile("pricing/index.html", head({ title, description, canonicalPath: "/" + p, depth, jsonLd: [bc.ld] }) + "\n" + body);
+  writeFile("pricing/index.html", head({ title, description, canonicalPath: "/" + p, depth, jsonLd: [bc.ld, ...pricingJsonLd()] }) + "\n" + body);
   track(abs("/" + p), { changefreq: "monthly", priority: "0.8", title, desc: description });
 }
 
@@ -2485,7 +2516,7 @@ function buildFaq() {
       { q: "취소나 변경이 가능한가요?", a: "가능합니다. 일정 변경이나 취소는 예약하신 연락처로 미리 알려주시면 원활하게 조정해 드립니다." },
       { q: "효과를 보장하나요?", a: "코코마사지는 휴식과 컨디션 관리를 돕는 웰니스 관리로, 질병의 진단·치료·예방을 목적으로 하지 않으며 특정 효과를 보장하지 않습니다." },
       { q: "임신 중이거나 질환이 있어도 받을 수 있나요?", a: "관리 종류와 자세가 제한될 수 있어 사전 상담이 필요합니다. 예약 시 임신 여부나 질환을 알려주시면 안전하게 진행할 수 있도록 안내해 드립니다." },
-      { q: "예약한 내용과 다르게 진행되면 어떻게 하나요?", a: `안내된 내용과 다른 점이 있으면 전화 ${SITE.phone} 또는 ${SITE.email}로 알려주시면 확인 후 조치해 드립니다. 코코마사지는 안내된 범위 안에서 정직하게 진행하는 것을 원칙으로 합니다.` },
+      { q: "예약한 내용과 다르게 진행되면 어떻게 하나요?", a: `안내된 내용과 다른 점이 있으면 전화 ${SITE.phone} 또는 문자로 알려주시면 확인 후 조치해 드립니다. 코코마사지는 안내된 범위 안에서 정직하게 진행하는 것을 원칙으로 합니다.` },
     ] },
   ];
   const allFaqs = groups.flatMap((g) => g.items);
@@ -2992,6 +3023,19 @@ img{max-width:100%;display:block}
 .price-head span{background:var(--panel)!important;color:var(--gold-bright);font-weight:700}
 .price-row:last-child span{border-bottom:0}
 .price-note{color:var(--muted);font-size:.88rem;margin-top:14px;max-width:760px}
+/* price cards */
+.price-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin:10px 0 8px}
+.price-card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:22px;display:flex;flex-direction:column}
+.pc-eyebrow{display:flex;align-items:center;justify-content:space-between;gap:8px;color:var(--gold);font-size:.74rem;letter-spacing:.12em;text-transform:uppercase;margin:0 0 8px}
+.pc-badge{background:var(--gold);color:#1a1410;font-size:.66rem;font-weight:800;letter-spacing:.08em;padding:3px 9px;border-radius:999px}
+.pc-name{font-size:1.25rem;color:var(--text);margin:0 0 10px;font-weight:800}
+.pc-desc{color:var(--muted);font-size:.9rem;margin:0 0 16px;flex:1}
+.pc-rows{list-style:none;padding:0;margin:0;border-top:1px solid var(--line)}
+.pc-rows li{display:flex;justify-content:space-between;align-items:center;padding:11px 2px;border-bottom:1px solid var(--line);font-size:.95rem;color:var(--muted)}
+.pc-rows li:last-child{border-bottom:0}
+.pc-rows strong{color:var(--gold-bright);font-weight:800}
+@media(max-width:920px){.price-cards{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:680px){.price-cards{grid-template-columns:1fr}}
 
 /* faq */
 .faq{max-width:820px}
