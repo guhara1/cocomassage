@@ -2732,8 +2732,10 @@ function buildRegionPage(r) {
   const prefix = "../../";
   const subs = r.slug === "seoul" ? SEOUL_DISTRICTS : SUB_AREAS[r.slug] || [];
   const isSeoul = r.slug === "seoul";
-  const title = `${r.name} 출장마사지 안내 | ${SITE.brand}`;
-  const description = `${r.name} 출장마사지 이용 안내 - ${r.lead} 권역별 확인사항, 추천 관리, 자주 묻는 질문을 확인하세요. 전화예약 ${SITE.phone}.`;
+  const recR = r.rec.map((x) => x.n);
+  const zoneR = r.zones.map((z) => z.n.replace(/\(.*$/, "").trim());
+  const title = `${r.name} 출장마사지 - ${recR[0]}·${recR[1]} 방문 예약 | ${SITE.brand}`;
+  const description = `${r.name} ${zoneR.slice(0, 3).join("·")} 출장마사지 방문 안내. ${r.lead} ${recR[0]}·${recR[1]}·${recR[2]} 코스별 요금과 권역별 확인사항을 안내합니다.`;
   const bc = breadcrumb([{ name: "홈", path: "/" }, { name: "출장 가능 지역", path: "areas/" }, { name: r.name }], depth);
   const jsonLd = [bc.ld, serviceJsonLd({ name: `${r.name} 출장마사지`, description: r.lead, areaName: r.name, url: "/" + p }), faqJsonLd(mergedFaqs(r))];
   const subListTitle = isSeoul ? "서울 25개 구 안내" : `${r.name} 주요 지역 안내`;
@@ -2795,8 +2797,10 @@ function buildSeoulDistrict(d) {
   const depth = 3;
   const p = `areas/seoul/${d.slug}/`;
   const prefix = "../../../";
-  const title = `${d.name} 출장마사지 안내 | ${SITE.brand}`;
-  const description = `${d.name} 출장마사지 이용 안내 - ${d.dong} 등 ${d.profile}. 권역별 확인사항과 추천 관리, FAQ를 확인하세요.`;
+  const recD = d.rec.map((x) => x.n);
+  const dongHead = d.dong.split("·").slice(0, 2).join("·");
+  const title = `${d.name} 출장마사지 | ${dongHead} ${recD[0]}·${recD[1]} 방문 - ${SITE.brand}`;
+  const description = `${d.name} 출장마사지 방문 안내 - ${d.dong} 등 ${d.profile}. ${recD[0]}·${recD[1]}·${recD[2]} 등 컨디션별 관리와 코스별 요금, 예약 전 확인사항을 안내합니다.`;
   const bc = breadcrumb([{ name: "홈", path: "/" }, { name: "출장 가능 지역", path: "areas/" }, { name: "서울", path: "areas/seoul/" }, { name: d.name }], depth);
   const jsonLd = [bc.ld, serviceJsonLd({ name: `${d.name} 출장마사지`, description: d.profile, areaName: `서울 ${d.name}`, url: "/" + p }), faqJsonLd(mergedFaqs(d, true))];
   const body = `${header(depth, { active: "areas" })}
@@ -2856,8 +2860,10 @@ function buildSubArea(region, d) {
   const depth = 3;
   const p = `areas/${region.slug}/${d.slug}/`;
   const prefix = "../../../";
-  const title = `${d.name} 출장마사지 안내 | ${SITE.brand}`;
-  const description = `${d.name} 출장마사지 이용 안내 - ${d.dong} 등 ${d.profile}. 이동 변수와 방문 확인사항, 추천 관리, FAQ를 확인하세요.`;
+  const recS = d.rec.map((x) => x.n);
+  const dongHeadS = d.dong.split("·").slice(0, 2).join("·");
+  const title = `${region.name} ${d.name} 출장마사지 | ${dongHeadS} ${recS[0]} 방문 - ${SITE.brand}`;
+  const description = `${region.name} ${d.name} 출장마사지 - ${d.dong} 등 ${d.profile}. ${d.move}. ${recS[0]}·${recS[1]} 추천과 코스별 요금을 안내합니다.`;
   const bc = breadcrumb([{ name: "홈", path: "/" }, { name: "출장 가능 지역", path: "areas/" }, { name: region.name, path: `areas/${region.slug}/` }, { name: d.name }], depth);
   const jsonLd = [bc.ld, serviceJsonLd({ name: `${d.name} 출장마사지`, description: d.profile, areaName: `${region.name} ${d.name}`, url: "/" + p }), faqJsonLd(mergedFaqs(d, true))];
   const body = `${header(depth, { active: "areas" })}
