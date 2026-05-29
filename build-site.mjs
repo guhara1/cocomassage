@@ -34,10 +34,13 @@ const SITE = {
 const NOW_ISO = `${SITE.buildDate}T09:00:00+09:00`;
 
 // 색인 대상 URL 수집기 (sitemap/rss 생성용)
-const indexUrls = []; // {loc, lastmod, changefreq, priority, title, desc}
+const indexUrls = []; // {loc, lastmod, changefreq, priority, title, desc} → sitemap
 function track(loc, { changefreq = "weekly", priority = "0.6", title = "", desc = "" } = {}) {
   indexUrls.push({ loc, lastmod: SITE.buildDate, changefreq, priority, title, desc });
 }
+// RSS(블로그) 전용 피드: 날짜형 콘텐츠(매거진 글·후기)만 담음
+const feedItems = []; // {loc, title, desc, date}
+function feed(loc, title, desc, date) { feedItems.push({ loc, title, desc, date }); }
 
 // ───────────────────────────────────────────────────────────────────────────
 // 2. 공통 유틸
@@ -178,6 +181,7 @@ function header(depth, { active = "" } = {}) {
         <li><a href="${r}pricing/index.html"${is("pricing")}>요금 안내</a></li>
         <li><a href="${r}faq/index.html"${is("faq")}>FAQ</a></li>
         <li><a href="${r}reviews/index.html"${is("reviews")}>이용후기</a></li>
+        <li><a href="${r}magazine/index.html"${is("magazine")}>매거진</a></li>
         <li><a href="${r}about/index.html"${is("about")}>회사 소개</a></li>
         <li><a href="tel:${SITE.phoneTel}" class="nav-cta">예약 문의</a></li>
       </ul>
@@ -204,6 +208,7 @@ function footer(depth) {
           <li><a href="${r}pricing/index.html">요금 안내</a></li>
           <li><a href="${r}faq/index.html">FAQ</a></li>
           <li><a href="${r}reviews/index.html">이용후기</a></li>
+          <li><a href="${r}magazine/index.html">매거진</a></li>
           <li><a href="${r}about/index.html">회사 소개</a></li>
           <li><a href="${r}policy/index.html">이용약관·개인정보</a></li>
         </ul>
@@ -2899,6 +2904,238 @@ function buildReviews() {
 ${footer(depth)}`;
   writeFile("reviews/index.html", head({ title, description, canonicalPath: "/" + p, depth, jsonLd: [bc.ld] }) + "\n" + body);
   track(abs("/" + p), { changefreq: "weekly", priority: "0.7", title, desc: description });
+  feed(abs("/" + p), "코코마사지 이용 후기", description, "2026-05-28");
+}
+
+// ───────────────────────────────────────────────────────────────────────────
+// 9-4. 데이터 + 페이지 생성: 매거진(블로그) — 날짜형 에버그린 콘텐츠 + RSS 피드
+// ───────────────────────────────────────────────────────────────────────────
+const MAGAZINE = [
+  {
+    slug: "massage-types-guide", date: "2026-05-24",
+    title: "스웨디시·딥티슈·아로마·타이·스포츠·림프, 무엇이 다를까 — 컨디션별 출장 관리 고르는 법",
+    desc: "출장마사지 6가지 관리의 차이와 고르는 기준. 부드러운 이완형, 시원한 집중형, 늘려 주는 관리로 나눠 컨디션·상황별로 정리했습니다.",
+    lead: "막상 예약하려고 하면 어떤 관리를 골라야 할지 막막합니다. 코코마사지가 안내하는 6가지 관리를 성격에 따라 세 갈래로 나눠, 컨디션과 상황에 맞게 고르는 기준을 정리했습니다.",
+    body: `
+      <h2>부드럽게 이완하는 관리 — 스웨디시·아로마테라피·림프</h2>
+      <p><a href="../../services/swedish/index.html">스웨디시</a>는 오일을 사용해 전신을 길고 부드럽게 풀어 주는 가장 무난한 관리로, 마사지가 처음이거나 전반적인 피로가 쌓였을 때 좋습니다. <a href="../../services/aroma/index.html">아로마테라피</a>는 향을 더해 분위기와 심리적 이완에 무게를 두어, 긴장으로 머리가 무겁고 마음이 복잡할 때 잘 맞습니다. <a href="../../services/lymphatic/index.html">림프마사지</a>는 매우 약하고 느린 손길로 순환과 가벼움에 집중해, 오래 앉거나 서서 다리가 붓고 무거운 분께 권합니다. 셋 다 강한 자극보다 편안함을 우선합니다.</p>
+
+      <h2>시원하게 푸는 관리 — 딥티슈·스포츠마사지</h2>
+      <p>특정 부위가 단단하게 뭉쳐 시원한 느낌을 원한다면 <a href="../../services/deep-tissue/index.html">딥티슈</a>가 적합합니다. 표층보다 깊은 근육층을 겨냥하되, 통증을 참게 하지 않고 시원한 범위에서 압을 단계적으로 높입니다. <a href="../../services/sports/index.html">스포츠마사지</a>는 운동·활동량이 많은 분의 근육 피로 관리에 초점을 두고, 주로 쓰는 부위를 풀어 주며 가벼운 스트레칭을 더합니다. 둘 다 강도가 있는 편이라 컨디션과 다음 일정을 함께 고려합니다.</p>
+
+      <h2>늘려 주는 관리 — 타이마사지</h2>
+      <p><a href="../../services/thai/index.html">타이마사지</a>는 오일 없이 편한 복장으로 스트레칭과 지압을 결합해 몸의 가동 범위를 살립니다. 문질러 푸는 느낌보다 시원하게 늘어나는 감각을 원하거나, 평소 몸이 뻣뻣하게 굳어 있는 분께 잘 맞습니다.</p>
+
+      <h2>관리 시간은 어떻게 고를까</h2>
+      <p>처음이라면 60분으로 전신 흐름을 경험한 뒤, 다음 방문에서 90분·120분으로 늘려 자신에게 맞는 구성을 찾는 방식을 권합니다. 어깨·목처럼 특정 부위만 집중한다면 60분으로도 충분하고, 전신을 충분히 풀며 마무리까지 여유 있게 받고 싶다면 90분 이상이 적당합니다. 코스별 요금은 <a href="../../pricing/index.html">요금 안내</a>에서 확인하실 수 있습니다.</p>
+
+      <h2>컨디션별 빠른 추천</h2>
+      <ul class="doc-ul">
+        <li>전반적으로 피곤하고 푹 쉬고 싶다 → 스웨디시</li>
+        <li>스트레스로 긴장이 안 풀리고 잠이 얕다 → 아로마테라피</li>
+        <li>어깨·목·허리가 단단하게 뭉쳤다 → 딥티슈</li>
+        <li>운동 후 특정 근육이 무겁다 → 스포츠마사지</li>
+        <li>몸이 뻣뻣하고 늘려 주는 느낌을 원한다 → 타이마사지</li>
+        <li>다리가 붓고 무거우며 자극은 부담된다 → 림프마사지</li>
+      </ul>
+      <p>어떤 관리가 맞을지 고민되면 예약 시 평소 컨디션을 말씀해 주세요. ${esc(SITE.responsibleTeam)}이 상황에 맞게 추천해 드립니다. 모든 관리는 휴식과 컨디션 관리를 위한 웰니스 범위로 진행되며, 질병의 진단·치료를 목적으로 하지 않습니다.</p>
+
+      <h2>오일을 쓰는 관리와 쓰지 않는 관리</h2>
+      <p>스웨디시·아로마테라피·딥티슈·스포츠마사지·림프마사지는 흡수가 잘 되는 오일을 사용해 손이 부드럽게 미끄러지도록 진행합니다. 반면 타이마사지는 오일 없이 편한 복장을 입은 채로 스트레칭과 지압을 결합합니다. 오일이 피부에 남는 느낌이 부담스럽거나 바로 외출 일정이 있다면 예약 시 미리 말씀해 주세요. 오일 양을 줄이거나, 관리 후 가볍게 닦아 드리거나, 오일을 쓰지 않는 타이마사지를 권해 드릴 수 있습니다.</p>
+
+      <h2>관리 후에는 이렇게</h2>
+      <p>관리가 끝나면 잠시 누워 호흡을 고르고, 미지근한 물을 충분히 마시면 개운함이 더 오래 유지됩니다. 딥티슈처럼 깊게 풀어 준 부위는 다음 날 가벼운 뻐근함이 느껴질 수 있는데, 대개 하루 이틀이면 가라앉습니다. 격렬한 운동이나 음주는 관리 직후 피하는 편이 좋고, 따뜻하게 쉬어 주면 이완된 상태가 더 잘 유지됩니다.</p>
+
+      <h2>사전에 알려주시면 좋은 경우</h2>
+      <p>임신 중이거나 디스크·관절 질환, 급성 염증·발열, 최근 수술 이력이 있는 경우에는 가능한 자세와 압이 달라질 수 있어 예약 시 미리 알려주셔야 합니다. 특정 오일이나 향에 알레르기가 있는 분, 멍이 잘 드는 체질인 분도 사전에 말씀해 주시면 그에 맞춰 안전하게 진행합니다. 코코마사지는 무리한 압을 권하지 않으며, 받는 동안 불편하면 언제든 조절해 드립니다.</p>
+
+      <h2>처음 받는 분이 자주 궁금해하는 점</h2>
+      <p>마사지를 처음 받으면 옷차림이나 진행 방식이 낯설 수 있습니다. 오일을 쓰는 관리는 관리에 편한 상태로 진행하되 수건으로 노출을 최소화하며, 타이마사지는 편한 복장을 그대로 입은 채 받습니다. 중간에 자세를 바꿀 때도 불편하지 않은지 확인하니 긴장하지 말고 호흡만 편하게 따라오시면 됩니다. 향의 종류, 압의 세기, 실내 온도처럼 사소해 보이는 것도 말씀하시면 맞춰 드리니 편하게 요청하세요. 같은 관리라도 그날의 컨디션에 따라 느낌이 다를 수 있어, 방문마다 그날 상태를 먼저 확인하고 시작합니다.</p>`,
+  },
+  {
+    slug: "visit-checklist", date: "2026-05-18",
+    title: "출장 관리 전 꼭 확인할 5가지 — 공동현관·주차·호텔 방문 규정 체크리스트",
+    desc: "출장마사지 방문이 매끄럽게 진행되도록 예약 전 확인하면 좋은 5가지. 건물 유형별 출입·주차, 숙소 방문 규정, 준비물까지 정리했습니다.",
+    lead: "출장 관리는 방문하는 공간의 환경에 따라 확인할 점이 달라집니다. 도착이 지연되거나 헛걸음하지 않도록, 예약 전에 점검하면 좋은 다섯 가지를 정리했습니다.",
+    body: `
+      <h2>1. 정확한 위치와 건물 유형</h2>
+      <p>같은 동네라도 아파트·오피스텔·호텔·단독주택은 출입 방식이 전혀 다릅니다. 예약 시 시·구·동과 건물 유형을 함께 알려주시면 그에 맞춰 안내가 빠릅니다. 지역별 권역 특성은 <a href="../../areas/index.html">출장 가능 지역</a> 페이지에서 확인하실 수 있습니다.</p>
+
+      <h2>2. 공동현관 출입 방법</h2>
+      <p>오피스텔·아파트는 공동현관 비밀번호나 세대 호출, 카드키 방식이 건물마다 다릅니다. 특히 고층 단지는 지하 주차 후 동별 엘리베이터를 따로 타야 하는 곳도 많습니다. 출입 방법과 정확한 동·호수를 미리 알려주시면 도착이 매끄럽습니다.</p>
+
+      <h2>3. 주차 가능 여부</h2>
+      <p>업무권 오피스텔은 방문자 주차가 유료·사전등록제인 경우가 많고, 빌라 밀집지는 골목 주차가 어렵습니다. 방문자 주차가 가능한지, 어렵다면 인근에 잠시 정차할 곳이 있는지 함께 확인하면 좋습니다.</p>
+
+      <h2>4. 호텔·숙소 외부인 방문 규정</h2>
+      <p>여행 중 호텔·리조트·펜션에서 받으실 때는 외부인의 객실 방문이 가능한지 숙소 규정을 미리 확인해야 합니다. 규정은 숙소마다 달라, 예약 전 프런트에 한 번 문의해 두시면 방문이 원활합니다.</p>
+
+      <h2>5. 준비물과 컨디션 안내</h2>
+      <p>편하게 누워 쉴 수 있는 공간이면 충분하며, 가벼운 식사 후 한 시간 정도 지난 상태가 편안합니다. 오일 사용이 부담스러우면 미리 말씀해 주시고, 알레르기·임신·질환 등 안전에 필요한 사항은 예약 시 꼭 알려주세요. 압이 세거나 약하면 진행 중에도 언제든 조절해 드리므로 통증을 참으실 필요가 없습니다.</p>
+
+      <h2>방문 당일 진행 흐름</h2>
+      <p>예약이 확정되면 방문 시간에 맞춰 관리사가 이동합니다. 도착하면 먼저 그날의 컨디션과 불편한 부위, 선호하는 압을 간단히 확인한 뒤 관리를 시작합니다. 진행 중에는 압이 세거나 약하면 바로 말씀해 주시면 조절해 드리고, 마무리에는 호흡을 고르는 시간을 둡니다. 끝난 뒤에는 수분 섭취와 휴식을 안내해 드립니다. 전체적으로 정해진 시간과 관리 종류에 맞춰 진행되므로, 예약 때 원하는 시간을 명확히 정해 두면 좋습니다.</p>
+
+      <h2>결제와 취소·변경</h2>
+      <p>결제는 예약 시 안내해 드리는 방법으로 진행하며, 안내된 금액 외에 임의 비용을 청구하지 않습니다. 일정 변경이나 취소는 예약하신 연락처로 미리 알려주시면 원활하게 조정됩니다. 방문이 임박한 시점의 무단 변경이 반복되면 이후 예약 안내가 제한될 수 있으니, 사정이 생기면 가능한 한 일찍 연락 주시길 권합니다.</p>
+
+      <h2>아파트·오피스텔 방문 팁</h2>
+      <p>대단지 아파트는 정문·후문에 따라 동까지 거리가 크게 차이 납니다. 가까운 출입구와 정확한 동·호수를 알려주시면 도보 이동이 줄어듭니다. 방문자 주차는 사전 등록이 필요한 단지가 많아 등록 방법을 미리 확인하면 좋고, 고층 주상복합은 지하 주차 후 동별 엘리베이터를 따로 타야 하는 경우가 있어 동선을 함께 챙기면 매끄럽습니다.</p>
+
+      <h2>호텔·숙소 방문 팁</h2>
+      <p>호텔·리조트·펜션은 외부인 객실 방문 규정이 숙소마다 다릅니다. 예약 전 프런트에 방문 가능 여부를 확인해 두면 헛걸음을 막을 수 있습니다. 객실 호수와 함께, 프런트를 거쳐야 하는지·로비에서 안내가 필요한지도 알려주시면 좋습니다. 관광 성수기에는 주변 도로와 주차가 혼잡하니 이동 시간을 여유 있게 잡는 편이 안전합니다.</p>
+
+      <h2>이런 점도 챙기면 좋아요</h2>
+      <ul class="doc-ul">
+        <li>퇴근 시간대·주말·관광 성수기는 예약과 이동이 몰려, 원하는 시간이 있으면 여유 있게 연락하면 좋습니다.</li>
+        <li>심야 시간대나 장거리·외곽 지역은 이동 조건에 따라 추가 출장비가 안내될 수 있습니다.</li>
+        <li>반려동물이 있거나 함께 있는 가족이 있는 경우 미리 알려주시면 진행이 매끄럽습니다.</li>
+      </ul>
+
+      <h2>방문 관련 자주 묻는 점</h2>
+      <p>“집이 좁아도 받을 수 있나요?”라는 질문이 많은데, 편하게 누워 쉴 수 있는 공간이면 충분합니다. “미리 무엇을 준비하나요?”는 가벼운 식사 후 한 시간, 편한 복장, 조용한 공간 정도면 됩니다. “시간이 늦어도 되나요?”는 지역과 예약 상황에 따라 다르므로 가능 시간을 먼저 확인해 드립니다. 사소해 보이는 점도 예약 시 함께 말씀하시면 그에 맞춰 안내합니다.</p>
+
+      <h2>정리</h2>
+      <p>위치·출입·주차·숙소 규정·준비물 다섯 가지만 미리 확인하면 대부분의 방문이 매끄럽게 진행됩니다. 예약은 전화 <a href="tel:${SITE.phoneTel}">${esc(SITE.phone)}</a> 또는 문자로 받으며, 가능 시간과 요금, 추가 출장비 여부를 사전에 안내해 드립니다. 자세한 절차는 <a href="../../how/index.html">이용 방법</a> 페이지를, 지역별 확인 사항은 <a href="../../areas/index.html">출장 가능 지역</a> 페이지를 참고하세요.</p>`,
+  },
+  {
+    slug: "common-myths", date: "2026-05-12",
+    title: "출장마사지에 대한 흔한 오해 6가지 — 사실은 이렇습니다",
+    desc: "출장마사지에 대해 자주 오해하는 6가지를 사실에 근거해 바로잡습니다. 의료 효과, 요금, 위생, 관리사 배정 등 이용 전 알아두면 좋은 내용.",
+    lead: "출장 관리를 처음 알아보면 잘못 알려진 정보로 망설이게 됩니다. 코코마사지가 실제 운영하며 자주 받는 오해를, 광고가 아니라 사실에 근거해 하나씩 바로잡았습니다. 예약 전에 한 번 읽어 두면 불필요한 걱정을 덜 수 있습니다.",
+    body: `
+      <h2>오해 1 — “마사지를 받으면 질병이 치료된다”</h2>
+      <p>아닙니다. 본 서비스는 휴식과 컨디션 관리를 돕는 웰니스 릴랙스 관리이며, 질병의 진단·치료·예방을 목적으로 하는 의료 행위가 아닙니다. 통증이나 질환이 있다면 먼저 전문 의료기관의 진료를 받으시길 권하며, 효과를 보장하거나 과장하는 안내는 하지 않습니다.</p>
+
+      <h2>오해 2 — “예약하면 현장에서 비용이 더 붙는다”</h2>
+      <p>코코마사지는 예약 단계에서 코스별 요금과 추가 출장비 여부를 미리 안내합니다. 안내된 금액 외에 임의 비용을 청구하지 않으며, 장거리·심야 등으로 출장비가 있는 경우 반드시 사전에 알려 드립니다. 기준은 <a href="../../pricing/index.html">요금 안내</a>에서 확인할 수 있습니다.</p>
+
+      <h2>오해 3 — “강하게 받아야 효과가 좋다”</h2>
+      <p>강도가 셀수록 좋은 것은 아닙니다. 통증을 참는 관리는 오히려 부담이 될 수 있어, 시원하다고 느끼는 범위에서 컨디션에 맞춰 압을 조절합니다. 부드러운 관리가 맞는 분도 많습니다.</p>
+
+      <h2>오해 4 — “위생 관리가 부실하다”</h2>
+      <p>관리 도구와 소모품은 위생적으로 관리하며 방문 시 청결을 우선합니다. 일회성으로 사용하는 소모품은 새것을 쓰고, 반복 사용하는 도구는 위생 기준에 맞게 관리합니다. 사용하는 오일이나 위생 관리 방식이 궁금하면 예약 시 문의하시면 안내해 드리며, 방문 시 직접 확인하셔도 됩니다. 위생은 방문형 서비스에서 가장 기본이 되는 부분이라 가장 신경 쓰는 영역입니다.</p>
+
+      <h2>오해 5 — “원하는 관리·시간대를 못 고른다”</h2>
+      <p>지역과 시간, 요청하신 관리 종류를 고려해 배정하며, 특정 관리나 시간대를 원하시면 예약 시 알려주시면 최대한 맞춰 드립니다. 다만 퇴근 시간대·주말·성수기는 예약이 몰려 여유 있게 연락 주시는 편이 좋습니다. 원하는 시간이 분명할수록, 또 미리 연락 주실수록 조율이 수월합니다.</p>
+
+      <h2>오해 6 — “지방·관광지는 출장이 안 된다”</h2>
+      <p>전국 시도 단위로 안내가 가능합니다. 다만 지역과 거리, 시간대에 따라 가능 시간과 출장비가 달라질 수 있어, 위치를 알려주시면 확인 후 안내해 드립니다. 여행 중 숙소 방문은 외부인 방문 규정만 미리 확인하면 됩니다. 지역별 권역 특성과 확인 사항은 <a href="../../areas/index.html">출장 가능 지역</a> 페이지에 정리되어 있습니다.</p>
+
+      <h2>오해 7 — “예약하면 곧바로 방문한다”</h2>
+      <p>방문 시간은 지역과 예약 상황에 따라 달라집니다. 가까운 거리라도 이동과 준비 시간이 필요하고, 시간대가 몰리면 원하는 시각이 어려울 수 있습니다. 그래서 원하는 시간이 분명하면 미리 연락 주시는 편이 좋습니다. 당일 예약도 가능 시간이 있으면 안내해 드리지만, 여유 있게 연락하실수록 조율이 수월합니다.</p>
+
+      <h2>오해 8 — “남성은 받기 어렵다”</h2>
+      <p>그렇지 않습니다. 남성 고객을 위한 전담 매니저 배정 코스가 별도로 마련되어 있어, 사전 통화로 컨디션과 강도를 함께 정한 뒤 진행합니다. 코스별 구성은 <a href="../../pricing/index.html">요금 안내</a>에서 확인하실 수 있습니다.</p>
+
+      <h2>오해 9 — “한 번 정한 시간은 못 바꾼다”</h2>
+      <p>현장에서 시간을 연장하고 싶으시면 가능 여부를 확인한 뒤 추가 시간 기준으로 안내해 드립니다. 반대로 예약 시간을 미리 변경·취소하실 때도 연락 주시면 조정됩니다. 다만 원하는 시간대가 분명하다면 처음부터 넉넉히 예약하시는 편이 여유롭습니다.</p>
+
+      <h2>오해 10 — “후기가 다 광고다”</h2>
+      <p>코코마사지 <a href="../../reviews/index.html">이용 후기</a>는 실제 이용 고객의 의견을 운영팀이 확인한 뒤 게재하며, 의료적 효과를 보장·과장하는 글이나 사실과 다른 내용은 싣지 않습니다. 후기는 개인의 경험이라 같은 관리라도 느낌은 다를 수 있습니다.</p>
+
+      <h2>왜 이런 오해가 생길까</h2>
+      <p>출장마사지는 방문형 서비스라 정보가 입에서 입으로 전해지는 경우가 많고, 일부 과장된 광고나 부정확한 후기 때문에 실제와 다른 인상이 굳어지기도 합니다. 그래서 코코마사지는 광고 문구보다 예약·방문에 실제로 필요한 정보를 사실대로 안내하는 것을 원칙으로 합니다. 표시된 상호·연락처·주소는 사업자등록 정보와 일치하며, 회사 소개와 이용약관을 통해 운영 주체와 기준을 투명하게 공개합니다.</p>
+
+      <h2>정리하며</h2>
+      <p>이 글은 ${esc(SITE.responsibleTeam)}이 실제 예약·출장 상담에서 자주 받는 질문을 바탕으로 정리했습니다. 출장마사지는 정확한 정보만 알면 어렵지 않게 이용할 수 있는 서비스입니다. 운영 주체가 궁금하다면 <a href="../../about/index.html">회사 소개</a>를, 더 궁금한 점은 <a href="../../faq/index.html">자주 묻는 질문</a>을 참고하시거나 전화·문자로 편하게 문의해 주세요.</p>`,
+  },
+];
+function buildMagazine() {
+  const depth = 1;
+  const p = "magazine/";
+  const title = `매거진 | ${SITE.brand} 출장마사지 가이드·이용 팁`;
+  const description = `${SITE.brand} 매거진. 관리 종류 비교, 출장 전 체크리스트, 흔한 오해 바로잡기 등 출장마사지 이용에 도움이 되는 글을 정리했습니다.`;
+  const bc = breadcrumb([{ name: "홈", path: "/" }, { name: "매거진" }], depth);
+  const sorted = [...MAGAZINE].sort((a, b) => b.date.localeCompare(a.date));
+  const cards = sorted.map((m) => `<a class="mag-card" href="${m.slug}/index.html">
+        <time class="mag-date" datetime="${esc(m.date)}">${esc(m.date.replace(/-/g, "."))}</time>
+        <h2>${esc(m.title)}</h2>
+        <p>${esc(m.desc)}</p>
+        <span class="card-more">글 읽기 →</span>
+      </a>`).join("\n      ");
+  const body = `${header(depth, { active: "magazine" })}
+<main id="main">
+  <div class="container">
+    ${bc.html}
+    <h1 class="page-title">코코마사지 매거진</h1>
+    <p class="section-lead">출장마사지를 처음 이용하거나 어떤 관리를 고를지 고민될 때 도움이 되는 가이드와 이용 팁을 정리합니다. 모든 글은 ${esc(SITE.responsibleTeam)}이 실제 운영 경험을 바탕으로 작성·검수하며, 광고 문구가 아니라 실제 이용에 필요한 정보를 사실대로 전하는 것을 목표로 합니다.</p>
+
+    <article class="doc" style="max-width:880px;margin-bottom:8px">
+      <h2>매거진을 운영하는 이유</h2>
+      <p>출장마사지는 방문 전에 확인해야 할 것이 많고, 과장된 정보로 오해가 생기기 쉬운 분야입니다. 코코마사지 매거진은 광고성 문구 대신, 실제 예약과 방문에서 도움이 되는 정보를 사실에 근거해 전하기 위해 만들었습니다. 관리 종류를 고르는 기준, 방문 전 점검할 점, 자주 하는 오해처럼 이용자가 정말 궁금해하는 내용을 다룹니다.</p>
+
+      <h2>어떤 주제를 다루나요</h2>
+      <p>스웨디시·딥티슈·아로마테라피 등 관리별 차이와 컨디션에 맞게 고르는 법, 공동현관·주차·호텔 방문 규정 같은 출장 전 체크리스트, 그리고 요금·위생·관리사 배정에 대한 흔한 오해를 바로잡는 글을 우선 정리했습니다. 앞으로도 이용에 실질적으로 도움이 되는 주제를 중심으로, 짧고 가벼운 양산형 글이 아니라 한 편씩 충분히 다룬 글을 더해 갈 예정입니다.</p>
+
+      <h2>글을 쓰고 검수하는 기준</h2>
+      <p>모든 글은 ${esc(SITE.responsibleTeam)}이 실제 상담·운영 경험을 바탕으로 작성하고, 게재 전 사실 여부와 표현을 점검합니다. 질병의 진단·치료·예방을 암시하거나 효과를 보장·과장하는 표현은 사용하지 않으며, 본 서비스가 휴식과 컨디션 관리를 위한 웰니스 관리임을 분명히 합니다. 글에 담긴 내용은 일반적인 안내이며, 실제 가능 시간·요금·방문 조건은 예약 시점에 안내되는 내용이 우선합니다.</p>
+
+      <h2>이런 분께 도움이 됩니다</h2>
+      <p>출장 관리를 한 번도 이용해 본 적이 없어 절차가 막막한 분, 어떤 관리가 자신에게 맞는지 고르기 어려운 분, 오피스텔·아파트·호텔 등 방문 환경에 따라 무엇을 준비해야 할지 모르는 분께 특히 도움이 됩니다. 또한 요금이나 위생, 관리사 배정처럼 예약 전에 확인하고 싶은 점이 있는 분이라면, 광고가 아닌 사실에 근거해 정리한 글에서 궁금증을 먼저 해소하고 안심하고 예약하실 수 있습니다.</p>
+
+      <h2>함께 보면 좋은 페이지</h2>
+      <p>관리별 특징과 추천 시간은 <a href="../services/index.html">서비스 안내</a>, 예약부터 방문까지의 단계는 <a href="../how/index.html">이용 방법</a>, 코스별 요금은 <a href="../pricing/index.html">요금 안내</a>, 지역별 권역 특성은 <a href="../areas/index.html">출장 가능 지역</a>에서 확인하실 수 있습니다. 실제 이용 경험이 궁금하다면 <a href="../reviews/index.html">이용 후기</a>도 함께 살펴보세요. 매거진의 글은 이 페이지들의 정보를 이용자 관점에서 한 번 더 풀어 설명한 것입니다.</p>
+
+      <h2>콘텐츠 운영 안내</h2>
+      <p>매거진의 글은 한 번 올리고 방치하지 않고, 요금·운영 방식·지역 안내가 바뀌면 본문을 검토해 갱신합니다. 순위만 노린 짧은 양산형 글을 쏟아내기보다, 이용자가 한 번 읽고 실제 도움을 받을 수 있도록 한 편씩 충분히 다룬 글을 천천히 더해 가는 것을 원칙으로 합니다. 같은 내용을 여러 글로 쪼개 반복하지 않으며, 중복되거나 도움이 되지 않는 글은 만들지 않습니다.</p>
+
+      <h2>면책 및 문의</h2>
+      <p>본 매거진의 글은 일반적인 정보 제공을 목적으로 하며, 개인의 건강 상태에 대한 의료적 조언을 대신하지 않습니다. 건강에 관한 우려가 있다면 전문 의료기관의 상담을 먼저 받으시길 권합니다. 글 내용에 대한 문의나 사실과 다른 점에 대한 정정 요청은 전화 <a href="tel:${SITE.phoneTel}">${esc(SITE.phone)}</a> 또는 문자로 보내주시면 ${esc(SITE.responsibleTeam)}이 확인 후 반영합니다.</p>
+
+      <h2>지금 읽어볼 만한 글</h2>
+      <p>처음 이용하신다면 관리 종류를 비교한 글로 자신에게 맞는 관리를 먼저 정하고, 방문 전 체크리스트로 출입·주차·숙소 규정을 준비한 뒤, 흔한 오해를 정리한 글로 요금·위생 같은 궁금증을 해소하는 순서를 권합니다. 아래 목록에서 관심 있는 글을 선택해 읽어 보세요. 각 글은 한 주제를 충분히 다루도록 작성되어, 한 편만 읽어도 그 주제에 대한 궁금증은 대부분 풀리도록 했으며, 필요하면 관련 안내 페이지로 바로 이동할 수 있게 링크를 함께 두었습니다.</p>
+    </article>
+
+    <h2 class="section-title" style="font-size:1.4rem;margin:24px 0 16px">최신 글</h2>
+    <div class="mag-list">
+      ${cards}
+    </div>
+    ${authorBlock("매거진 글은 실제 예약·출장 상담 경험을 바탕으로 작성하며, 의료·과장 표현은 사용하지 않습니다.")}
+  </div>
+  ${reserveBlock(depth)}
+</main>
+${footer(depth)}`;
+  writeFile("magazine/index.html", head({ title, description, canonicalPath: "/" + p, depth, jsonLd: [bc.ld] }) + "\n" + body);
+  track(abs("/" + p), { changefreq: "weekly", priority: "0.7", title, desc: description });
+  sorted.forEach(buildMagazineArticle);
+}
+function buildMagazineArticle(m) {
+  const depth = 2;
+  const p = `magazine/${m.slug}/`;
+  const title = `${m.title} | ${SITE.brand} 매거진`;
+  const description = m.desc;
+  const bc = breadcrumb([{ name: "홈", path: "/" }, { name: "매거진", path: "magazine/" }, { name: m.title.split(" — ")[0] }], depth);
+  const jsonLd = [
+    bc.ld,
+    {
+      "@context": "https://schema.org", "@type": "BlogPosting",
+      headline: m.title, description: m.desc, image: abs("/assets/og-image.png"),
+      datePublished: m.date, dateModified: SITE.buildDate,
+      author: { "@type": "Organization", name: SITE.responsibleTeam, url: abs("/about/") },
+      publisher: { "@type": "Organization", name: SITE.brand, logo: { "@type": "ImageObject", url: abs("/assets/favicon.svg") } },
+      mainEntityOfPage: abs("/" + p),
+    },
+  ];
+  const body = `${header(depth, { active: "magazine" })}
+<main id="main">
+  <div class="container">
+    ${bc.html}
+    <article class="doc">
+      <h1>${esc(m.title)}</h1>
+      <p class="mag-byline"><time datetime="${esc(m.date)}">${esc(m.date.replace(/-/g, "."))}</time> · ${esc(SITE.responsibleTeam)} 작성·검수</p>
+      <p class="doc-lead">${esc(m.lead)}</p>
+${m.body}
+
+      ${authorBlock(`이 글은 ${esc(SITE.responsibleTeam)}이 실제 운영 경험을 바탕으로 작성·검수했으며, 의료·과장 표현은 사용하지 않습니다.`)}
+    </article>
+  </div>
+  ${reserveBlock(depth)}
+</main>
+${footer(depth)}`;
+  writeFile(`${p}index.html`, head({ title, description, canonicalPath: "/" + p, depth, jsonLd }) + "\n" + body);
+  track(abs("/" + p), { changefreq: "monthly", priority: "0.7", title, desc: description });
+  feed(abs("/" + p), m.title, m.desc, m.date);
 }
 
 // ───────────────────────────────────────────────────────────────────────────
@@ -3457,6 +3694,14 @@ img{max-width:100%;display:block}
 .review-text{margin:0;color:var(--text);font-size:.96rem;line-height:1.75}
 .review-reply{margin:14px 0 0;padding:12px 14px;background:var(--bg-alt);border-radius:10px;color:var(--muted);font-size:.9rem;line-height:1.65}
 .review-reply strong{color:var(--gold);margin-right:6px}
+.mag-list{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin:8px 0 4px}
+.mag-card{display:flex;flex-direction:column;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:22px;transition:transform .15s ease,border-color .15s ease}
+.mag-card:hover{border-color:var(--gold);transform:translateY(-3px)}
+.mag-date{color:var(--gold);font-size:.8rem;font-weight:700;letter-spacing:.04em}
+.mag-card h2{margin:8px 0 10px;font-size:1.12rem;color:var(--gold-bright);line-height:1.4;border:0;padding:0}
+.mag-card p{margin:0 0 14px;color:var(--muted);font-size:.92rem;flex:1;line-height:1.6}
+.mag-byline{color:var(--muted);font-size:.86rem;margin:0 0 22px}
+@media(max-width:680px){.mag-list{grid-template-columns:1fr}}
 @media(max-width:920px){.info-panel,.rec-cards,.zone-cards{grid-template-columns:1fr}}
 @media(max-width:680px){.area-body{padding-top:32px}.area-hero{padding:18px 0 36px}}
 
@@ -3637,27 +3882,29 @@ ${urlset}
   writeFile("sitemap.xml", sitemap);
   writeFile("sitemap1.xml", sitemap); // 서치콘솔 보조 제출용 (내용 동일)
 
-  // RSS
-  const items = indexUrls
+  // RSS = 블로그 피드(매거진 글·후기), 최신순. 전체 페이지는 sitemap이 담당.
+  const sortedFeed = [...feedItems].sort((a, b) => b.date.localeCompare(a.date));
+  const items = sortedFeed
     .map(
       (u) => `    <item>
       <title>${esc(u.title)}</title>
       <link>${u.loc}</link>
       <guid isPermaLink="true">${u.loc}</guid>
       <description>${esc(u.desc)}</description>
-      <pubDate>${new Date(NOW_ISO).toUTCString()}</pubDate>
+      <pubDate>${new Date(u.date + "T09:00:00+09:00").toUTCString()}</pubDate>
     </item>`
     )
     .join("\n");
+  const latest = sortedFeed.length ? new Date(sortedFeed[0].date + "T09:00:00+09:00").toUTCString() : new Date(NOW_ISO).toUTCString();
   const rss = `<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>${esc(SITE.brand)} 업데이트</title>
-    <link>${SITE.url}/</link>
+    <title>${esc(SITE.brand)} 매거진</title>
+    <link>${SITE.url}/magazine/</link>
     <atom:link href="${SITE.url}/rss.xml" rel="self" type="application/rss+xml"/>
-    <description>${esc(SITE.brand)} 출장마사지 서비스·지역 안내 업데이트 피드</description>
+    <description>${esc(SITE.brand)} 매거진 — 출장마사지 가이드·이용 팁·이용 후기 피드</description>
     <language>ko</language>
-    <lastBuildDate>${new Date(NOW_ISO).toUTCString()}</lastBuildDate>
+    <lastBuildDate>${latest}</lastBuildDate>
 ${items}
   </channel>
 </rss>
@@ -3713,6 +3960,7 @@ function run() {
   buildPricing();
   buildFaq();
   buildReviews();
+  buildMagazine();
   buildAbout();
   buildPolicy();
   buildServicesIndex();
