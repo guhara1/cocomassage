@@ -1267,12 +1267,15 @@ img{max-width:100%;display:block}
 .nav-cta:hover{background:var(--gold-bright)}
 .has-sub{position:relative}
 .submenu{display:none;position:absolute;top:100%;left:0;min-width:180px;background:var(--panel);
-  border:1px solid var(--line);border-radius:10px;padding:6px;flex-direction:column;box-shadow:0 12px 30px rgba(0,0,0,.4)}
-.submenu-wide{min-width:260px;display:none;flex-wrap:wrap;width:300px}
-.has-sub:hover>.submenu,.has-sub:focus-within>.submenu{display:flex}
+  border:1px solid var(--line);border-radius:10px;padding:6px;box-shadow:0 12px 30px rgba(0,0,0,.4)}
+.submenu-wide{min-width:330px}
 .submenu li{width:100%}
-.submenu-wide li{width:50%}
-.submenu a{padding:8px 12px;font-size:.9rem}
+.submenu a{display:block;padding:8px 12px;font-size:.9rem;white-space:nowrap;border-radius:6px}
+.submenu a:hover{background:var(--bg-alt);color:var(--gold-bright)}
+@media(hover:hover) and (min-width:681px){
+  .has-sub:hover>.submenu,.has-sub:focus-within>.submenu{display:block}
+  .has-sub:hover>.submenu-wide,.has-sub:focus-within>.submenu-wide{display:grid;grid-template-columns:repeat(3,1fr);gap:2px}
+}
 .nav-toggle{display:none;flex-direction:column;gap:5px;background:none;border:0;cursor:pointer;padding:8px}
 .nav-toggle span{width:24px;height:2px;background:var(--text);transition:.2s}
 
@@ -1430,9 +1433,9 @@ img{max-width:100%;display:block}
     transform:translateY(-130%);transition:transform .25s;max-height:calc(100vh - 64px);overflow:auto}
   .primary-nav.open{transform:translateY(0)}
   .primary-nav ul{flex-direction:column;align-items:stretch;padding:10px}
-  .submenu,.submenu-wide{position:static;display:none;box-shadow:none;width:auto;background:var(--bg-alt)}
+  .submenu,.submenu-wide{position:static;display:none;box-shadow:none;width:auto;min-width:0;background:var(--bg-alt)}
   .submenu-wide li{width:100%}
-  .has-sub.open>.submenu,.has-sub.open>.submenu-wide{display:flex}
+  .has-sub.open>.submenu,.has-sub.open>.submenu-wide{display:block;grid-template-columns:none}
   .nav-cta{text-align:center;margin-top:8px}
   .trust-grid,.card-grid,.how-steps,.how-notes,.area-grid,.area-grid-lg,.sub-grid{grid-template-columns:1fr}
   .price-row{grid-template-columns:100px 1fr}
