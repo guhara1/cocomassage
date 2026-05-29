@@ -171,9 +171,9 @@ function header(depth, { active = "" } = {}) {
             ${REGIONS.map((g) => `<li><a href="${r}areas/${g.slug}/index.html">${esc(g.name)}</a></li>`).join("\n            ")}
           </ul>
         </li>
-        <li><a href="${r}index.html#how"${is("how")}>이용 방법</a></li>
-        <li><a href="${r}index.html#pricing"${is("pricing")}>요금 안내</a></li>
-        <li><a href="${r}index.html#faq"${is("faq")}>FAQ</a></li>
+        <li><a href="${r}how/index.html"${is("how")}>이용 방법</a></li>
+        <li><a href="${r}pricing/index.html"${is("pricing")}>요금 안내</a></li>
+        <li><a href="${r}faq/index.html"${is("faq")}>FAQ</a></li>
         <li><a href="${r}about/index.html"${is("about")}>회사 소개</a></li>
         <li><a href="tel:${SITE.phoneTel}" class="nav-cta">예약 문의</a></li>
       </ul>
@@ -196,6 +196,9 @@ function footer(depth) {
         <ul>
           <li><a href="${r}services/index.html">서비스 안내</a></li>
           <li><a href="${r}areas/index.html">출장 가능 지역</a></li>
+          <li><a href="${r}how/index.html">이용 방법</a></li>
+          <li><a href="${r}pricing/index.html">요금 안내</a></li>
+          <li><a href="${r}faq/index.html">FAQ</a></li>
           <li><a href="${r}about/index.html">회사 소개</a></li>
           <li><a href="${r}policy/index.html">이용약관·개인정보</a></li>
         </ul>
@@ -2019,18 +2022,9 @@ function buildIndex() {
   const depth = 0;
   const title = `${SITE.brand} | 전국 출장마사지 예약 안내`;
   const description = `${SITE.brand} 출장마사지 예약 안내. 스웨디시·아로마테라피·딥티슈·타이·스포츠·림프 관리와 지역별 이용 안내, 요금, FAQ를 한 곳에서 확인하세요. 전화예약 ${SITE.phone}.`;
-  const mainFaqs = [
-    { q: "예약은 어떻게 하나요?", a: "전화 또는 문자로 방문 지역, 희망 시간, 원하는 관리 종류를 알려주시면 가능 시간을 안내해 드립니다. 위치와 건물 유형을 함께 알려주시면 더 빠르게 확인됩니다." },
-    { q: "어디까지 출장이 가능한가요?", a: "전국 시도 단위로 안내가 가능하며, 지역 페이지에서 권역별 확인 사항을 보실 수 있습니다. 지역과 거리에 따라 가능 시간과 출장비가 달라질 수 있습니다." },
-    { q: "결제는 어떻게 하나요?", a: "예약 시 안내해 드리는 방법으로 진행하며, 추가 출장비가 발생하는 경우 사전에 안내합니다. 과장된 효과나 추가 비용을 임의로 청구하지 않습니다." },
-    { q: "취소나 변경이 가능한가요?", a: "가능합니다. 일정 변경이나 취소는 예약하신 연락처로 미리 알려주시면 원활하게 조정해 드립니다." },
-    { q: "관리사는 어떻게 배정되나요?", a: "지역과 시간, 요청하신 관리 종류를 고려해 배정하며, 위생과 응대 기준을 준수합니다." },
-    { q: "위생 관리는 어떻게 하나요?", a: "관리 도구와 소모품은 위생적으로 관리하며, 방문 시 청결을 우선합니다. 궁금한 점은 예약 시 문의해 주세요." },
-  ];
   const jsonLd = [
     orgJsonLd(),
     { "@context": "https://schema.org", "@type": "WebSite", name: SITE.brand, url: SITE.url, inLanguage: "ko" },
-    faqJsonLd(mainFaqs),
   ];
   const body = `${header(depth)}
 <main id="main">
@@ -2092,42 +2086,30 @@ function buildIndex() {
     </div>
   </section>
 
-  <section id="how" class="section section-alt" aria-labelledby="how-h">
+  <section class="section section-alt" aria-labelledby="guide-h">
     <div class="container">
-      <h2 id="how-h" class="section-title">이용 방법</h2>
-      <ol class="how-steps">
-        <li><strong>예약 문의</strong><span>전화·문자로 지역, 희망 시간, 관리 종류를 알려주세요.</span></li>
-        <li><strong>안내 확인</strong><span>가능 시간과 요금, 추가 출장비 여부를 사전에 안내해 드립니다.</span></li>
-        <li><strong>방문 준비</strong><span>공동현관·주차·프런트 규정 등 방문 환경을 함께 확인합니다.</span></li>
-        <li><strong>관리 진행</strong><span>컨디션을 확인하고 압을 조절하며 편안하게 진행합니다.</span></li>
-      </ol>
-      <div class="how-notes">
-        <div><h3>관리 전 준비사항</h3><p>가벼운 식사 후 1시간 이상 지난 상태가 편하며, 알레르기·임신·질환은 미리 알려주세요.</p></div>
-        <div><h3>결제 방법</h3><p>예약 시 안내해 드리는 방법으로 진행하고, 추가 출장비는 사전에 안내합니다.</p></div>
-        <div><h3>취소·환불 안내</h3><p>일정 변경·취소는 미리 연락 주시면 원활히 조정합니다. 무단 변경 시 안내가 제한될 수 있습니다.</p></div>
-        <div><h3>방문 유의사항</h3><p>건전한 휴식 관리 범위로 진행하며, 부적절한 요구에는 응하지 않습니다.</p></div>
+      <h2 id="guide-h" class="section-title">이용 안내 바로가기</h2>
+      <p class="section-lead">예약 절차와 요금 기준, 자주 묻는 질문은 각각의 안내 페이지에서 자세히 확인하실 수 있습니다.</p>
+      <div class="card-grid">
+        <a class="svc-card" href="how/index.html"><h3>이용 방법</h3><p>예약부터 방문, 관리 진행, 취소·환불까지 단계별 절차와 방문 전 준비사항을 안내합니다.</p><span class="card-more">이용 방법 보기 →</span></a>
+        <a class="svc-card" href="pricing/index.html"><h3>요금 안내</h3><p>60·90·120분 시간별 구성과 추가 출장비가 적용되는 기준, 결제·환불 방식을 안내합니다.</p><span class="card-more">요금 안내 보기 →</span></a>
+        <a class="svc-card" href="faq/index.html"><h3>자주 묻는 질문</h3><p>예약·결제·지역·위생·관리사 배정 등 이용 전 궁금한 점을 모아 답변해 드립니다.</p><span class="card-more">FAQ 보기 →</span></a>
       </div>
     </div>
   </section>
 
-  <section id="pricing" class="section" aria-labelledby="price-h">
+  <section class="section" aria-labelledby="first-h">
     <div class="container">
-      <h2 id="price-h" class="section-title">요금 안내</h2>
-      <p class="section-lead">아래는 시간 기준의 일반 안내이며, 지역·거리·시간대에 따라 추가 출장비가 발생할 수 있습니다. 정확한 금액은 예약 시 안내해 드립니다.</p>
-      <div class="price-table" role="table" aria-label="시간별 요금 안내">
-        <div class="price-row price-head" role="row"><span role="columnheader">관리 시간</span><span role="columnheader">기준 안내</span></div>
-        <div class="price-row" role="row"><span role="cell">60분</span><span role="cell">전신 흐름을 가볍게 경험하기 좋은 기본 구성</span></div>
-        <div class="price-row" role="row"><span role="cell">90분</span><span role="cell">충분한 이완과 부위별 집중이 가능한 구성</span></div>
-        <div class="price-row" role="row"><span role="cell">120분</span><span role="cell">전신과 집중 부위를 여유 있게 다루는 구성</span></div>
-      </div>
-      <p class="price-note">※ 심야·장거리·도서 지역 등은 이동 조건에 따라 추가 비용이 안내될 수 있습니다. 과장된 효과나 의료적 효능을 약속하지 않습니다.</p>
+      <h2 id="first-h" class="section-title">출장마사지를 처음 이용한다면</h2>
+      <p class="section-lead">방문 관리는 처음이면 무엇을 준비해야 할지 막막할 수 있습니다. 코코마사지는 어렵지 않게 이용하실 수 있도록 예약 단계에서 필요한 것을 함께 정리해 드립니다.</p>
+      <p>먼저 전화나 문자로 <strong>방문할 지역과 건물 유형, 희망 시간, 원하는 관리 종류</strong>를 알려주시면 됩니다. 그러면 가능한 시간과 요금, 추가 출장비가 있는지 미리 안내해 드립니다. 관리 종류를 정하지 못하셨다면 평소 컨디션(어깨가 무겁다, 다리가 붓는다, 푹 쉬고 싶다 등)을 말씀해 주시면 그에 맞는 관리를 추천해 드립니다. 방문 시에는 편하게 쉴 수 있는 공간만 있으면 충분하며, 가벼운 식사 후 한 시간 정도 지난 상태가 가장 편안합니다. 관리 중에는 압이 세거나 약하면 언제든 말씀해 주세요. 통증을 참아야 하는 관리는 진행하지 않습니다.</p>
     </div>
   </section>
 
-  <section id="faq" class="section section-alt" aria-labelledby="faq-h">
+  <section class="section section-alt" aria-labelledby="promise-h">
     <div class="container">
-      <h2 id="faq-h" class="section-title">자주 묻는 질문</h2>
-      <div class="faq">${faqHtml(mainFaqs)}</div>
+      <h2 id="promise-h" class="section-title">안심하고 이용하도록, 코코마사지의 약속</h2>
+      <p>출장마사지는 낯선 사람이 내 공간을 방문하는 서비스인 만큼 신뢰가 가장 중요합니다. 코코마사지는 표시된 상호·연락처·주소를 사업자등록 정보와 일치시키고, 예약 단계에서 가능 시간과 요금을 투명하게 안내해 예상치 못한 비용이 발생하지 않도록 합니다. 관리사는 지역과 시간, 요청하신 관리 종류를 고려해 배정하며 위생과 응대 기준을 준수합니다. 또한 본 서비스는 휴식과 컨디션 관리를 돕는 웰니스 관리로, 질병의 진단·치료·예방을 목적으로 하는 의료 행위가 아니며 효과를 과장하지 않습니다. 건전한 관리 범위에서만 진행하고, 부적절한 요구에는 응하지 않습니다.</p>
     </div>
   </section>
 
@@ -2301,6 +2283,233 @@ function buildPolicy() {
 ${footer(depth)}`;
   writeFile("policy/index.html", head({ title, description, canonicalPath: "/" + p, depth, jsonLd: [bc.ld] }) + "\n" + body);
   track(abs("/" + p), { changefreq: "yearly", priority: "0.3", title, desc: description });
+}
+
+// ───────────────────────────────────────────────────────────────────────────
+// 9-2. 페이지 생성: 이용 방법 / 요금 안내 / FAQ (독립 페이지)
+// ───────────────────────────────────────────────────────────────────────────
+function buildHow() {
+  const depth = 1;
+  const p = "how/";
+  const title = `이용 방법 | ${SITE.brand} 출장마사지 예약 안내`;
+  const description = `${SITE.brand} 출장마사지 이용 방법. 예약 접수부터 안내 확인, 방문 준비, 관리 진행, 취소·환불까지 단계별 절차와 건물 유형별 방문 확인사항을 안내합니다.`;
+  const bc = breadcrumb([{ name: "홈", path: "/" }, { name: "이용 방법" }], depth);
+  const jsonLd = [
+    bc.ld,
+    {
+      "@context": "https://schema.org",
+      "@type": "HowTo",
+      name: `${SITE.brand} 출장마사지 예약·이용 방법`,
+      description: "전화·문자 예약부터 방문 관리까지의 단계별 안내",
+      step: [
+        { "@type": "HowToStep", position: 1, name: "예약 문의", text: "전화 또는 문자로 방문 지역, 희망 시간, 원하는 관리 종류를 알려주세요." },
+        { "@type": "HowToStep", position: 2, name: "안내 확인", text: "가능 시간과 요금, 추가 출장비 여부를 사전에 안내받습니다." },
+        { "@type": "HowToStep", position: 3, name: "방문 준비", text: "공동현관·주차·프런트 규정 등 방문 환경을 함께 확인합니다." },
+        { "@type": "HowToStep", position: 4, name: "관리 진행", text: "컨디션을 확인하고 압을 조절하며 편안하게 진행합니다." },
+      ],
+    },
+  ];
+  const body = `${header(depth, { active: "how" })}
+<main id="main">
+  <div class="container">
+    ${bc.html}
+    <article class="doc">
+      <h1>이용 방법</h1>
+      <p class="doc-lead">코코마사지 출장 관리는 전화·문자 예약 한 번으로 시작됩니다. 처음 이용하시는 분도 어렵지 않도록, 예약 접수부터 방문·관리·마무리까지의 흐름을 단계별로 안내해 드립니다.</p>
+
+      <h2>예약 절차 한눈에 보기</h2>
+      <ol class="how-steps">
+        <li><strong>예약 문의</strong><span>전화·문자로 지역, 희망 시간, 관리 종류를 알려주세요.</span></li>
+        <li><strong>안내 확인</strong><span>가능 시간과 요금, 추가 출장비 여부를 사전에 안내해 드립니다.</span></li>
+        <li><strong>방문 준비</strong><span>공동현관·주차·프런트 규정 등 방문 환경을 함께 확인합니다.</span></li>
+        <li><strong>관리 진행</strong><span>컨디션을 확인하고 압을 조절하며 편안하게 진행합니다.</span></li>
+      </ol>
+
+      <h2>1단계 · 예약 문의</h2>
+      <p>예약은 전화 <a href="tel:${SITE.phoneTel}">${esc(SITE.phone)}</a> 또는 문자로 받습니다. ① 방문할 지역과 건물 유형(아파트·오피스텔·호텔·숙소 등), ② 희망 날짜와 시간, ③ 원하는 관리 종류와 시간(60·90·120분)을 알려주시면 안내가 빠릅니다. 어떤 관리가 맞을지 모르겠다면 평소 컨디션을 말씀해 주시면 <a href="../services/index.html">서비스 안내</a>를 참고해 추천해 드립니다.</p>
+
+      <h2>2단계 · 안내 확인</h2>
+      <p>방문 지역과 시간을 확인한 뒤 가능 시간과 <a href="../pricing/index.html">요금</a>, 추가 출장비 여부를 미리 안내해 드립니다. 지역과 거리, 시간대에 따라 가능 여부가 달라질 수 있어, 정확한 위치를 알려주실수록 확인이 빠릅니다. 안내된 내용에 동의하시면 예약이 확정됩니다.</p>
+
+      <h2>3단계 · 방문 준비와 환경 확인</h2>
+      <p>출장 관리는 방문지의 환경에 따라 확인할 점이 다릅니다. 아래 사항을 미리 확인해 주시면 방문이 지연되지 않습니다.</p>
+      <ul class="doc-ul">
+        <li><strong>오피스텔·아파트</strong> — 공동현관 출입 방법(비밀번호·호출), 동 호수, 방문자 주차 가능 여부를 확인합니다.</li>
+        <li><strong>호텔·숙소</strong> — 외부인 객실 방문이 가능한지 프런트 규정을 미리 확인합니다.</li>
+        <li><strong>주거 빌라·단독</strong> — 좁은 골목·경사로 진입과 주차 가능 여부를 알려주세요.</li>
+      </ul>
+
+      <h2>관리 전 준비사항</h2>
+      <ul class="doc-ul">
+        <li>가벼운 식사 후 1시간 이상 지난 상태가 편안합니다.</li>
+        <li>편안한 복장과 조용히 쉴 수 있는 공간을 준비해 주세요.</li>
+        <li>알레르기·임신·질환 등 안전에 필요한 사항은 예약 시 미리 알려주세요.</li>
+        <li>샤워가 가능한 환경이면 관리 전후 정리에 좋습니다.</li>
+      </ul>
+
+      <h2>4단계 · 관리 진행</h2>
+      <p>방문 후에는 컨디션과 선호하는 압을 먼저 확인하고, 통증을 참게 하지 않는 범위에서 관리를 진행합니다. 진행 중 압이 세거나 약하다고 느끼면 언제든 말씀해 주시면 바로 조절해 드립니다. 관리 도구와 소모품은 위생적으로 관리하며, 예약하신 시간과 관리 종류에 맞춰 응대합니다.</p>
+
+      <h2>결제 방법</h2>
+      <p>결제는 예약 시 안내해 드리는 방법으로 진행합니다. 추가 출장비가 발생하는 경우 예약 단계에서 미리 안내하므로 예상치 못한 비용이 청구되지 않습니다. 자세한 기준은 <a href="../pricing/index.html">요금 안내</a> 페이지에서 확인하실 수 있습니다.</p>
+
+      <h2>취소·환불 안내</h2>
+      <p>일정 변경이나 취소는 예약하신 연락처로 미리 알려주시면 원활하게 조정해 드립니다. 방문이 임박한 시점의 무단 변경·취소가 반복될 경우 이후 예약 안내가 제한될 수 있습니다. 천재지변이나 교통 사정 등 불가피한 사유로 일정이 조정될 때는 사전에 연락드립니다.</p>
+
+      <h2>예약은 언제 하면 좋나요</h2>
+      <p>원하는 시간대가 분명하다면 하루 전이나 당일 여유 있게 연락 주시면 조율이 수월합니다. 퇴근 이후 시간대(오후 6~9시)와 주말, 관광 성수기에는 예약이 몰려 원하는 시간이 빠르게 마감될 수 있습니다. 심야 시간대는 지역과 이동 조건에 따라 가능 여부가 달라질 수 있어 사전에 확인해 안내해 드립니다. 지역별 가능 시간과 이동 변수는 <a href="../areas/index.html">출장 가능 지역</a> 페이지에서도 확인하실 수 있습니다.</p>
+
+      <h2>관리 종류는 어떻게 고르나요</h2>
+      <p>어떤 관리를 받을지 정하지 못하셨다면 예약 시 평소 컨디션을 말씀해 주세요. 전신을 부드럽게 풀고 싶다면 스웨디시, 어깨·목처럼 뭉친 부위를 시원하게 풀고 싶다면 딥티슈, 향과 분위기로 마음까지 가라앉히고 싶다면 아로마테라피가 잘 맞습니다. 오일 사용이 부담스러우면 스트레칭 중심의 타이마사지를, 다리가 붓고 무거운 느낌이라면 자극이 적은 림프마사지를 권합니다. 운동 후 회복이 목적이라면 스포츠마사지가 적합합니다. 관리별 자세한 특징은 <a href="../services/index.html">서비스 안내</a>에서 확인하실 수 있습니다.</p>
+
+      <h2>관리 후 마무리</h2>
+      <p>관리가 끝나면 잠시 휴식하며 수분을 충분히 섭취하는 것이 좋습니다. 깊게 풀어 준 부위는 다음 날 가벼운 뻐근함이 있을 수 있으나 보통 하루 이틀이면 가라앉습니다. 이용 후 불편한 점이나 안내와 다른 점이 있으면 ${esc(SITE.phone)} 또는 ${esc(SITE.email)}로 알려주시면 확인 후 안내해 드립니다.</p>
+
+      <h2>방문 유의사항</h2>
+      <p>코코마사지는 휴식과 컨디션 관리를 위한 건전한 웰니스 관리만 제공하며, 부적절한 요구에는 응하지 않습니다. 안전하고 서로 존중하는 환경에서 관리가 이루어지도록 운영하며, 안내와 다른 점이 있으면 ${esc(SITE.phone)}로 알려주시면 확인 후 조치합니다.</p>
+
+      ${authorBlock("예약·방문 절차는 실제 출장 상담에서 반복적으로 확인하는 내용을 바탕으로 정리했습니다.")}
+    </article>
+  </div>
+  ${reserveBlock(depth)}
+</main>
+${footer(depth)}`;
+  writeFile("how/index.html", head({ title, description, canonicalPath: "/" + p, depth, jsonLd }) + "\n" + body);
+  track(abs("/" + p), { changefreq: "monthly", priority: "0.8", title, desc: description });
+}
+
+function buildPricing() {
+  const depth = 1;
+  const p = "pricing/";
+  const title = `요금 안내 | ${SITE.brand} 출장마사지`;
+  const description = `${SITE.brand} 출장마사지 요금 안내. 60·90·120분 시간별 구성과 추가 출장비가 적용되는 기준, 결제·환불 방식을 투명하게 안내합니다.`;
+  const bc = breadcrumb([{ name: "홈", path: "/" }, { name: "요금 안내" }], depth);
+  const body = `${header(depth, { active: "pricing" })}
+<main id="main">
+  <div class="container">
+    ${bc.html}
+    <article class="doc">
+      <h1>요금 안내</h1>
+      <p class="doc-lead">코코마사지는 예약 단계에서 요금과 추가 출장비를 먼저 안내해, 예상치 못한 비용이 발생하지 않도록 합니다. 아래는 시간 기준의 일반 안내이며, 정확한 금액은 방문 지역과 시간대를 확인한 뒤 예약 시 안내해 드립니다.</p>
+
+      <h2>시간별 구성 안내</h2>
+      <div class="price-table" role="table" aria-label="시간별 요금 안내">
+        <div class="price-row price-head" role="row"><span role="columnheader">관리 시간</span><span role="columnheader">기준 안내</span></div>
+        <div class="price-row" role="row"><span role="cell">60분</span><span role="cell">전신 흐름을 가볍게 경험하거나 특정 부위를 집중하기 좋은 기본 구성</span></div>
+        <div class="price-row" role="row"><span role="cell">90분</span><span role="cell">전신을 충분히 이완하고 불편한 부위까지 다루는 구성</span></div>
+        <div class="price-row" role="row"><span role="cell">120분</span><span role="cell">전신과 집중 부위를 여유 있게 다루고 마무리까지 받는 구성</span></div>
+      </div>
+
+      <h2>관리 시간은 어떻게 고르나요</h2>
+      <p>같은 관리라도 시간에 따라 받는 느낌이 다릅니다. 처음 이용하신다면 60분으로 전신 흐름을 경험한 뒤, 다음 방문에서 90분 이상으로 시간을 늘려 자신에게 맞는 구성을 찾는 것을 권합니다. 어깨·목처럼 특정 부위가 많이 뭉쳐 있다면 60분으로 집중 관리가 가능하고, 전신을 충분히 풀면서 마무리까지 여유 있게 받고 싶다면 120분이 적합합니다. 관리 종류별 추천 시간은 <a href="../services/index.html">서비스 안내</a>에서 확인하실 수 있습니다.</p>
+
+      <h2>추가 출장비가 적용되는 경우</h2>
+      <p>출장 관리는 방문 지역과 이동 조건에 따라 추가 출장비가 안내될 수 있습니다. 아래와 같은 경우가 해당하며, 발생 시 예약 단계에서 미리 안내합니다.</p>
+      <ul class="doc-ul">
+        <li><strong>장거리·외곽 지역</strong> — 도시 간 이동이 길거나 외곽·도서 지역으로 이동 거리가 큰 경우</li>
+        <li><strong>심야 시간대</strong> — 늦은 시간 방문으로 이동 조건이 달라지는 경우</li>
+        <li><strong>성수기·교통 혼잡</strong> — 관광 성수기나 주말 정체로 이동이 지연되는 경우</li>
+      </ul>
+      <p>같은 시도 안에서도 권역과 거리에 따라 조건이 달라질 수 있어, 지역별 기준은 <a href="../areas/index.html">출장 가능 지역</a> 페이지에서 함께 확인하실 수 있습니다.</p>
+
+      <h2>결제 방법</h2>
+      <p>결제는 예약 시 안내해 드리는 방법으로 진행합니다. 안내된 금액 외에 임의의 비용을 추가로 청구하지 않으며, 추가 출장비가 있는 경우 반드시 사전에 알려 드립니다.</p>
+
+      <h2>환불·변경 기준</h2>
+      <p>예약 변경이나 취소는 예약하신 연락처로 미리 알려주시면 원활하게 조정해 드립니다. 방문이 임박한 시점의 무단 취소가 반복될 경우 이후 예약 안내가 제한될 수 있습니다. 자세한 절차는 <a href="../how/index.html">이용 방법</a>의 취소·환불 안내에서 확인하실 수 있습니다.</p>
+
+      <h2>관리 종류별 추천 시간</h2>
+      <p>관리 종류에 따라 적당한 시간이 조금씩 다릅니다. 아래를 참고해 시간을 선택하시면 됩니다.</p>
+      <ul class="doc-ul">
+        ${SERVICES.map((s) => `<li><strong><a href="../services/${s.slug}/index.html">${esc(s.name)}</a></strong> — ${esc(s.times)}</li>`).join("\n        ")}
+      </ul>
+
+      <h2>방문 가능 시간대</h2>
+      <p>방문 가능 시간은 지역과 예약 상황에 따라 달라집니다. 퇴근 이후 시간대(오후 6~9시)와 주말, 관광 성수기에는 예약이 몰려 원하는 시간이 빠르게 마감될 수 있으니 여유 있게 연락 주시면 조율이 수월합니다. 심야 시간대는 가능 여부와 이동 조건이 달라질 수 있어 사전에 확인해 안내해 드립니다.</p>
+
+      <h2>요금 관련 자주 묻는 질문</h2>
+      <div class="faq">${faqHtml([
+        { q: "안내받은 금액 외에 추가로 내야 하는 비용이 있나요?", a: "안내된 금액 외에 임의의 비용을 청구하지 않습니다. 추가 출장비가 있는 경우 예약 단계에서 반드시 미리 안내하므로 현장에서 예상치 못한 비용이 발생하지 않습니다." },
+        { q: "시간을 연장하면 요금은 어떻게 되나요?", a: "현장에서 시간 연장을 원하시면 가능 여부를 확인한 뒤 추가 시간 기준으로 안내해 드립니다. 미리 시간을 넉넉히 예약하시면 더 여유롭게 받으실 수 있습니다." },
+        { q: "지역에 따라 금액이 다른가요?", a: "관리 자체의 시간 기준은 동일하지만, 방문 지역과 거리·시간대에 따라 추가 출장비가 달라질 수 있습니다. 정확한 금액은 위치 확인 후 예약 시 안내해 드립니다." },
+      ])}</div>
+
+      <h2>요금 관련 유의사항</h2>
+      <p>코코마사지는 휴식과 컨디션 관리를 돕는 웰니스 관리로, 특정 효과나 치료 효능을 보장하지 않습니다. 비현실적으로 저렴한 금액이나 과장된 효과를 내세우지 않으며, 안내된 기준 안에서 정직하게 운영합니다. 표시된 연락처와 상호는 사업자등록 정보(${esc(SITE.company)}, 사업자등록번호 ${esc(SITE.bizNo)})와 일치합니다.</p>
+
+      ${authorBlock("요금 기준은 지역·시간대에 따른 실제 이동 조건을 반영해 정리했으며, 효과를 과장하지 않습니다.")}
+    </article>
+  </div>
+  ${reserveBlock(depth)}
+</main>
+${footer(depth)}`;
+  writeFile("pricing/index.html", head({ title, description, canonicalPath: "/" + p, depth, jsonLd: [bc.ld] }) + "\n" + body);
+  track(abs("/" + p), { changefreq: "monthly", priority: "0.8", title, desc: description });
+}
+
+function buildFaq() {
+  const depth = 1;
+  const p = "faq/";
+  const title = `자주 묻는 질문 | ${SITE.brand} 출장마사지`;
+  const description = `${SITE.brand} 출장마사지 자주 묻는 질문. 예약·결제·출장 지역·위생·관리사 배정·취소·서비스 범위 등 이용 전 궁금한 점을 모아 답변합니다.`;
+  const bc = breadcrumb([{ name: "홈", path: "/" }, { name: "FAQ" }], depth);
+  const groups = [
+    { h: "예약 관련", items: [
+      { q: "예약은 어떻게 하나요?", a: "전화 또는 문자로 방문 지역과 건물 유형, 희망 시간, 원하는 관리 종류를 알려주시면 가능 시간을 안내해 드립니다. 위치와 건물 유형을 함께 알려주시면 더 빠르게 확인됩니다." },
+      { q: "당일 예약도 가능한가요?", a: "가능 시간이 있으면 당일도 안내해 드립니다. 다만 시간대가 몰리거나 이동이 긴 지역은 여유 있게 연락 주시면 조율이 수월합니다." },
+      { q: "예약 시 무엇을 알려줘야 하나요?", a: "방문할 지역과 건물 유형(아파트·오피스텔·호텔 등), 희망 날짜·시간, 원하는 관리 종류와 시간(60·90·120분)을 알려주시면 됩니다." },
+      { q: "예약은 얼마나 미리 해야 하나요?", a: "원하는 시간대가 분명하면 하루 전이나 당일 여유 있게 연락 주시면 좋습니다. 퇴근 시간대·주말·성수기에는 예약이 몰릴 수 있어 미리 문의하시면 조율이 수월합니다." },
+      { q: "여러 명이 함께 받을 수 있나요?", a: "인원과 공간, 희망 시간에 따라 가능 여부가 달라집니다. 예약 시 인원과 장소를 알려주시면 가능한 방법을 안내해 드립니다." },
+    ] },
+    { h: "결제·요금 관련", items: [
+      { q: "결제는 어떻게 하나요?", a: "예약 시 안내해 드리는 방법으로 진행하며, 추가 출장비가 발생하는 경우 사전에 안내합니다. 안내된 금액 외에 임의의 비용을 청구하지 않습니다." },
+      { q: "추가 출장비는 언제 붙나요?", a: "장거리·외곽 지역, 심야 시간대, 성수기 교통 혼잡 등 이동 조건에 따라 안내될 수 있으며, 발생 시 예약 단계에서 미리 안내합니다. 자세한 내용은 요금 안내 페이지를 참고해 주세요." },
+    ] },
+    { h: "출장 지역·방문 관련", items: [
+      { q: "어디까지 출장이 가능한가요?", a: "전국 시도 단위로 안내가 가능하며, 출장 가능 지역 페이지에서 권역별 확인 사항을 보실 수 있습니다. 지역과 거리에 따라 가능 시간과 출장비가 달라질 수 있습니다." },
+      { q: "오피스텔·호텔도 방문되나요?", a: "가능합니다. 오피스텔은 공동현관 출입 방법과 주차를, 호텔·숙소는 외부인 방문 규정을 미리 확인해 주시면 방문이 원활합니다." },
+      { q: "어떤 공간이 필요한가요?", a: "편안하게 누워서 쉴 수 있는 공간이면 충분합니다. 관리 종류에 따라 매트나 편한 복장을 안내해 드리기도 합니다." },
+    ] },
+    { h: "관리·위생 관련", items: [
+      { q: "관리사는 어떻게 배정되나요?", a: "지역과 시간, 요청하신 관리 종류를 고려해 배정하며, 위생과 응대 기준을 준수합니다. 특정 관리나 시간대를 원하시면 예약 시 알려주세요." },
+      { q: "위생 관리는 어떻게 하나요?", a: "관리 도구와 소모품은 위생적으로 관리하며, 방문 시 청결을 우선합니다. 궁금한 점은 예약 시 문의해 주세요." },
+      { q: "많이 아프지 않나요?", a: "통증을 참아야 하는 관리는 진행하지 않습니다. 컨디션에 맞춰 압을 조절하며, 세거나 약하면 진행 중에도 언제든 조절해 드립니다." },
+    ] },
+    { h: "관리 종류 선택", items: [
+      { q: "어떤 마사지를 골라야 할지 모르겠어요.", a: "평소 컨디션을 알려주시면 추천해 드립니다. 전신을 부드럽게 풀고 싶으면 스웨디시, 뭉친 부위를 시원하게 풀고 싶으면 딥티슈, 향과 분위기로 이완하고 싶으면 아로마테라피가 잘 맞습니다." },
+      { q: "오일을 쓰지 않는 관리도 있나요?", a: "네, 타이마사지는 오일 없이 편한 복장으로 스트레칭과 지압을 결합해 진행합니다. 오일 사용이 부담스러우면 타이마사지를 권합니다." },
+      { q: "다리가 붓고 무거운데 어떤 관리가 좋나요?", a: "자극이 적고 부드러운 림프마사지가 잘 맞습니다. 오래 앉거나 서 있어 다리가 무거운 분께 권하며, 강한 압이 부담스러운 분께도 적합합니다." },
+      { q: "운동 후 회복에는 어떤 관리가 좋나요?", a: "활동 근육의 피로 관리에 초점을 둔 스포츠마사지를 권합니다. 주로 사용하는 부위를 중심으로 풀어 주고 가벼운 스트레칭을 더합니다." },
+    ] },
+    { h: "취소·기타", items: [
+      { q: "취소나 변경이 가능한가요?", a: "가능합니다. 일정 변경이나 취소는 예약하신 연락처로 미리 알려주시면 원활하게 조정해 드립니다." },
+      { q: "효과를 보장하나요?", a: "코코마사지는 휴식과 컨디션 관리를 돕는 웰니스 관리로, 질병의 진단·치료·예방을 목적으로 하지 않으며 특정 효과를 보장하지 않습니다." },
+      { q: "임신 중이거나 질환이 있어도 받을 수 있나요?", a: "관리 종류와 자세가 제한될 수 있어 사전 상담이 필요합니다. 예약 시 임신 여부나 질환을 알려주시면 안전하게 진행할 수 있도록 안내해 드립니다." },
+      { q: "예약한 내용과 다르게 진행되면 어떻게 하나요?", a: `안내된 내용과 다른 점이 있으면 전화 ${SITE.phone} 또는 ${SITE.email}로 알려주시면 확인 후 조치해 드립니다. 코코마사지는 안내된 범위 안에서 정직하게 진행하는 것을 원칙으로 합니다.` },
+    ] },
+  ];
+  const allFaqs = groups.flatMap((g) => g.items);
+  const jsonLd = [bc.ld, faqJsonLd(allFaqs)];
+  const groupsHtml = groups.map((g) => `      <h2>${esc(g.h)}</h2>
+      <div class="faq">${faqHtml(g.items)}</div>`).join("\n\n");
+  const body = `${header(depth, { active: "faq" })}
+<main id="main">
+  <div class="container">
+    ${bc.html}
+    <article class="doc">
+      <h1>자주 묻는 질문</h1>
+      <p class="doc-lead">코코마사지 출장 관리를 이용하기 전에 자주 문의하시는 내용을 주제별로 정리했습니다. 더 궁금한 점은 전화 <a href="tel:${SITE.phoneTel}">${esc(SITE.phone)}</a> 또는 문자로 문의해 주세요. 예약 절차는 <a href="../how/index.html">이용 방법</a>, 요금 기준은 <a href="../pricing/index.html">요금 안내</a> 페이지에서 더 자세히 확인하실 수 있습니다.</p>
+
+${groupsHtml}
+
+      ${authorBlock("자주 묻는 질문은 실제 예약·출장 상담에서 반복적으로 확인되는 내용을 바탕으로 정리하고 검수했습니다.")}
+    </article>
+  </div>
+  ${reserveBlock(depth)}
+</main>
+${footer(depth)}`;
+  writeFile("faq/index.html", head({ title, description, canonicalPath: "/" + p, depth, jsonLd }) + "\n" + body);
+  track(abs("/" + p), { changefreq: "monthly", priority: "0.8", title, desc: description });
 }
 
 // ───────────────────────────────────────────────────────────────────────────
@@ -3033,6 +3242,9 @@ function validate() {
 function run() {
   buildAssets();
   buildIndex();
+  buildHow();
+  buildPricing();
+  buildFaq();
   buildAbout();
   buildPolicy();
   buildServicesIndex();
