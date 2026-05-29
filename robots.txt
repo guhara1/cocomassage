@@ -13,6 +13,6 @@ Allow: /
 User-agent: Daumoa
 Allow: /
 
-Sitemap: https://cocomassage.club/sitemap.xml
-Sitemap: https://cocomassage.club/sitemap1.xml
-Sitemap: https://cocomassage.club/rss.xml
+Sitemap: https://cocomassage.pages.dev/sitemap.xml
+Sitemap: https://cocomassage.pages.dev/sitemap1.xml
+Sitemap: https://cocomassage.pages.dev/rss.xml

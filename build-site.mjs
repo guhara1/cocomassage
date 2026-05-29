@@ -15,7 +15,7 @@ const OUT = __dirname;
 // 1. 사이트 기본 설정 (다음 사이트에서 가장 먼저 바꿀 값)
 // ───────────────────────────────────────────────────────────────────────────
 const SITE = {
-  url: "https://cocomassage.club", // 커스텀 도메인 연결 후 이 값만 바꾸면 전체 반영
+  url: "https://cocomassage.pages.dev", // 커스텀 도메인 연결 후 이 값만 바꾸면 전체 반영
   brand: "코코마사지",
   brandEn: "COCO",
   company: "YH LAB",
