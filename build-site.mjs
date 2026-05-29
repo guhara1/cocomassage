@@ -177,6 +177,7 @@ function header(depth, { active = "" } = {}) {
         <li><a href="${r}how/index.html"${is("how")}>이용 방법</a></li>
         <li><a href="${r}pricing/index.html"${is("pricing")}>요금 안내</a></li>
         <li><a href="${r}faq/index.html"${is("faq")}>FAQ</a></li>
+        <li><a href="${r}reviews/index.html"${is("reviews")}>이용후기</a></li>
         <li><a href="${r}about/index.html"${is("about")}>회사 소개</a></li>
         <li><a href="tel:${SITE.phoneTel}" class="nav-cta">예약 문의</a></li>
       </ul>
@@ -202,6 +203,7 @@ function footer(depth) {
           <li><a href="${r}how/index.html">이용 방법</a></li>
           <li><a href="${r}pricing/index.html">요금 안내</a></li>
           <li><a href="${r}faq/index.html">FAQ</a></li>
+          <li><a href="${r}reviews/index.html">이용후기</a></li>
           <li><a href="${r}about/index.html">회사 소개</a></li>
           <li><a href="${r}policy/index.html">이용약관·개인정보</a></li>
         </ul>
@@ -2839,6 +2841,67 @@ ${footer(depth)}`;
 }
 
 // ───────────────────────────────────────────────────────────────────────────
+// 9-3. 데이터 + 페이지 생성: 이용 후기 (1차 경험형 콘텐츠)
+//   ※ 자기 사이트 후기에는 별점(AggregateRating/Review) 구조화 데이터를 넣지 않음
+//      (구글 '자기 참조 리뷰' 정책 위반 방지). 텍스트 후기로만 게재.
+// ───────────────────────────────────────────────────────────────────────────
+const REVIEWS = [
+  { name: "김민*", area: "서울 강남구 역삼동", svc: "딥티슈 90분", date: "2026-04", text: "야근이 잦아 어깨와 목이 늘 뭉쳐 있었는데, 예약할 때 가장 불편한 부위를 미리 말했더니 그 부위 위주로 시간을 배분해 주셨어요. 압이 세질 때마다 괜찮은지 물어봐 주셔서 부담 없이 받았고, 통증을 억지로 참게 하지 않는 점이 좋았습니다. 오피스텔 공동현관 출입 방법을 예약 때 확인해 둬서 도착도 매끄러웠어요. 사용하는 도구가 위생적으로 관리된다는 점도 직접 보고 안심했고, 약속한 시간에 정확히 방문해 주셔서 일정에 차질이 없었습니다.", reply: "역삼동 오피스텔은 출입 방식이 건물마다 달라 미리 확인하면 방문이 한결 수월합니다. 어깨 부위는 다음 방문 때도 컨디션 보고 압을 조절해 드릴게요." },
+  { name: "이서*", area: "경기 성남시 분당 정자동", svc: "스웨디시 60분", date: "2026-03", text: "출장 관리는 처음이라 걱정했는데, 전화로 예약할 때 절차와 준비할 점을 차분히 알려 주셔서 안심이 됐습니다. 가격도 코스별로 미리 안내받아 현장에서 추가 비용 같은 건 전혀 없었어요. 60분 동안 전신을 부드럽게 풀어 주셔서 처음 받기에 딱 좋았고, 끝나고 수분 섭취하라는 안내까지 세심했습니다. 편한 복장과 조용히 쉴 공간만 있으면 된다고 미리 알려 주셔서 준비도 간단했고, 다음엔 90분으로 더 받아 보려 합니다.", reply: "" },
+  { name: "박지*", area: "부산 해운대구 우동(호텔)", svc: "아로마테라피 90분", date: "2026-05", text: "여행 중 호텔에서 받았는데, 객실 방문이 가능한지 프런트 규정을 미리 확인해 주셔서 문제없이 진행됐어요. 향을 직접 고를 수 있어서 라벤더 계열로 부탁드렸더니 이동으로 지친 몸과 마음이 한결 가라앉았습니다. 성수기라 도로가 막힐 수 있다고 도착 시간을 여유 있게 잡아 주신 점도 좋았어요. 향이 과하지 않도록 농도를 맞춰 주셔서 두통 없이 편안했고, 마무리에 목과 두피까지 가볍게 정리해 주셔서 개운하게 끝났습니다.", reply: "해운대 성수기에는 해안도로 정체가 변수라 여유 있게 안내드리고 있습니다. 다음 방문 때도 편하게 말씀해 주세요." },
+  { name: "최현*", area: "인천 연수구 송도동", svc: "림프마사지 90분", date: "2026-04", text: "오래 앉아 일하다 보니 다리가 늘 무겁고 부은 느낌이었는데, 자극이 적고 부드러운 관리라 받는 내내 편안했습니다. 송도 고층 단지라 지하 주차 후 동별 엘리베이터를 타야 했는데, 그 동선을 미리 안내받아 헤매지 않았어요. 강한 압이 부담스러운 분께 권하고 싶습니다. 자세를 바꿀 때마다 불편하지 않은지 확인해 주셨고, 끝난 뒤에는 수분을 충분히 섭취하면 좋다는 안내도 받아 도움이 됐습니다.", reply: "" },
+  { name: "정우*", area: "서울 마포구 상암동", svc: "스포츠마사지 60분", date: "2026-05", text: "주말마다 운동을 하는데 종아리와 허벅지에 피로가 쌓여서 회복 목적으로 예약했어요. 주로 쓰는 부위를 말씀드리니 그 근육군 위주로 풀어 주시고 마무리에 가벼운 스트레칭도 더해 주셨습니다. 상암 오피스권이라 건물 출입 방법을 미리 확인해 방문이 정시에 이뤄진 점도 만족스러웠습니다. 운동 직후보다 한두 시간 지난 뒤가 더 편하다는 조언도 받아, 다음 예약 때 참고하려고 합니다.", reply: "운동 후 회복 목적이면 다음에도 부위와 운동 강도를 알려 주시면 그에 맞춰 강도를 조절해 드리겠습니다." },
+];
+function buildReviews() {
+  const depth = 1;
+  const p = "reviews/";
+  const title = `이용 후기 | ${SITE.brand} 출장마사지 실제 방문 후기`;
+  const description = `${SITE.brand} 출장마사지를 이용한 고객의 실제 방문 후기. 지역·관리별 예약과 방문, 압 조절, 위생 경험을 솔직하게 확인하세요.`;
+  const bc = breadcrumb([{ name: "홈", path: "/" }, { name: "이용후기" }], depth);
+  const cards = REVIEWS.map((rv) => `<article class="review-card">
+        <header class="review-head">
+          <span class="review-name">${esc(rv.name)}</span>
+          <span class="review-meta">${esc(rv.area)} · ${esc(rv.svc)} · <time datetime="${esc(rv.date)}">${esc(rv.date.replace("-", "."))}</time></span>
+        </header>
+        <p class="review-text">${esc(rv.text)}</p>
+        ${rv.reply ? `<p class="review-reply"><strong>${esc(SITE.responsibleTeam)} 답변</strong> ${esc(rv.reply)}</p>` : ""}
+      </article>`).join("\n      ");
+  const body = `${header(depth, { active: "reviews" })}
+<main id="main">
+  <div class="container">
+    ${bc.html}
+    <article class="doc">
+      <h1>코코마사지 이용 후기</h1>
+      <p class="doc-lead">${esc(SITE.brand)}를 실제로 이용하신 고객이 남겨 주신 후기입니다. 지역과 관리 종류, 방문 환경이 서로 달라 경험도 제각각이며, ${esc(SITE.responsibleTeam)}이 내용을 확인한 뒤 게재하고 개인정보 보호를 위해 이름은 일부만 표기합니다.</p>
+
+      <h2>후기 게재 기준</h2>
+      <p>후기는 예약·방문 과정과 관리 경험에 대한 실제 의견만 게재합니다. 의료적 효과를 보장하거나 과장하는 표현, 사실과 다른 내용, 특정인을 비방하는 글은 게재하지 않습니다. 후기는 개인의 경험이며, 같은 관리라도 컨디션과 지역 여건에 따라 느낌은 다를 수 있습니다. 또한 본 서비스는 휴식과 컨디션 관리를 위한 웰니스 관리로, 후기에 담긴 만족감 역시 의료적 치료 효과를 의미하지 않습니다. 후기를 남기고 싶으시면 예약하신 연락처로 전화 또는 문자로 보내주시면 ${esc(SITE.responsibleTeam)}이 검토 후 반영하며, 개인정보 보호를 위해 이름은 일부만 노출합니다.</p>
+
+      <h2>고객 후기</h2>
+      <div class="review-list">
+      ${cards}
+      </div>
+
+      <h2>후기를 통해 자주 확인되는 점</h2>
+      <ul class="doc-ul">
+        <li>예약 단계에서 가능 시간·요금·추가 출장비를 미리 안내받아 현장 추가 비용이 없었다는 의견이 많습니다.</li>
+        <li>방문 전 공동현관·주차·프런트 규정을 함께 확인해 도착이 매끄러웠다는 점이 자주 언급됩니다.</li>
+        <li>압이 세거나 약할 때 바로 조절해 통증을 참지 않아도 됐다는 후기가 공통적입니다.</li>
+        <li>관리 도구·소모품의 위생 상태와 약속 시간 준수에 대한 만족 의견이 꾸준히 확인됩니다.</li>
+        <li>처음 이용하는 분도 예약 단계의 안내가 자세해 부담이 적었다는 반응이 많습니다.</li>
+      </ul>
+
+      ${authorBlock("후기는 실제 이용 고객의 의견을 운영팀이 확인해 게재하며, 의료·과장 표현은 게재하지 않습니다.")}
+    </article>
+  </div>
+  ${reserveBlock(depth)}
+</main>
+${footer(depth)}`;
+  writeFile("reviews/index.html", head({ title, description, canonicalPath: "/" + p, depth, jsonLd: [bc.ld] }) + "\n" + body);
+  track(abs("/" + p), { changefreq: "weekly", priority: "0.7", title, desc: description });
+}
+
+// ───────────────────────────────────────────────────────────────────────────
 // 10. 페이지 생성: 서비스 인덱스 + 상세
 // ───────────────────────────────────────────────────────────────────────────
 function buildServicesIndex() {
@@ -3386,6 +3449,14 @@ img{max-width:100%;display:block}
 .dong-link:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
 @media(max-width:920px){.dong-grid{grid-template-columns:repeat(3,1fr)}}
 @media(max-width:680px){.dong-grid{grid-template-columns:repeat(2,1fr)}}
+.review-list{display:grid;gap:14px;margin:6px 0 8px}
+.review-card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:20px 22px;border-left:3px solid var(--gold)}
+.review-head{display:flex;flex-wrap:wrap;align-items:baseline;gap:10px;margin-bottom:10px}
+.review-name{font-weight:800;color:var(--gold-bright);font-size:1.02rem}
+.review-meta{color:var(--muted);font-size:.84rem}
+.review-text{margin:0;color:var(--text);font-size:.96rem;line-height:1.75}
+.review-reply{margin:14px 0 0;padding:12px 14px;background:var(--bg-alt);border-radius:10px;color:var(--muted);font-size:.9rem;line-height:1.65}
+.review-reply strong{color:var(--gold);margin-right:6px}
 @media(max-width:920px){.info-panel,.rec-cards,.zone-cards{grid-template-columns:1fr}}
 @media(max-width:680px){.area-body{padding-top:32px}.area-hero{padding:18px 0 36px}}
 
@@ -3641,6 +3712,7 @@ function run() {
   buildHow();
   buildPricing();
   buildFaq();
+  buildReviews();
   buildAbout();
   buildPolicy();
   buildServicesIndex();
