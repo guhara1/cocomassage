@@ -66,3 +66,7 @@ const SITE = { url, brand, brandEn, company, ceo, bizNo, address, phone, phoneTe
 ## 배포
 
 GitHub 저장소 → Cloudflare Pages 자동 배포(빌드 명령 불필요, 정적 파일 그대로 서빙). 배포 후 라이브 URL에서 200 OK, sitemap/robots 접근을 확인하고 Search Console·Naver Search Advisor에 sitemap을 제출합니다.
+
+## OG 이미지
+
+`assets/og-image.png` (1200×630 PNG)는 SNS·카카오톡·구글 Discover 썸네일용입니다. SVG 미지원 환경을 고려해 PNG로 제공하며, 문구 변경 시 `python3 scripts/make-og.py`로 재생성합니다(Pillow 필요, 나눔고딕 자동 다운로드). OG 메타·구조화 데이터의 image는 모두 이 PNG를 가리킵니다.

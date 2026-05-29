@@ -96,7 +96,7 @@ function faqJsonLd(faqs) {
 function head({ title, description, canonicalPath, depth, jsonLd = [], noindex = false, ogImagePath, verification = false }) {
   const r = rel(depth);
   const canonical = abs(canonicalPath);
-  const ogImage = abs(ogImagePath || "/assets/og-image.svg");
+  const ogImage = abs(ogImagePath || "/assets/og-image.png");
   const ldBlocks = jsonLd
     .filter(Boolean)
     .map((o) => `<script type="application/ld+json">${JSON.stringify(o)}</script>`)
@@ -125,6 +125,10 @@ function head({ title, description, canonicalPath, depth, jsonLd = [], noindex =
   <meta property="og:description" content="${esc(description)}">
   <meta property="og:url" content="${canonical}">
   <meta property="og:image" content="${ogImage}">
+  <meta property="og:image:type" content="image/png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="${esc(SITE.brand)} 전국 출장마사지 안내">
   <meta property="og:locale" content="ko_KR">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="${esc(title)}">
@@ -265,7 +269,7 @@ function orgJsonLd() {
     legalName: SITE.company,
     url: SITE.url,
     telephone: SITE.phone,
-    image: abs("/assets/og-image.svg"),
+    image: abs("/assets/og-image.png"),
     logo: abs("/assets/favicon.svg"),
     address: {
       "@type": "PostalAddress",
@@ -284,7 +288,7 @@ function serviceJsonLd({ name, description, areaName, url }) {
     serviceType: name,
     name,
     description,
-    image: abs("/assets/og-image.svg"),
+    image: abs("/assets/og-image.png"),
     url: abs(url),
     areaServed: areaName || "대한민국",
     provider: {
