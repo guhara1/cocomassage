@@ -26,8 +26,8 @@ const SITE = {
   phoneTel: "050882024717",
   responsibleTeam: "코코마사지 운영팀",
   // 검색엔진 인증 태그 (실제 발급값으로 교체)
-  googleVerification: "GOOGLE_SITE_VERIFICATION_TOKEN",
-  naverVerification: "NAVER_SITE_VERIFICATION_TOKEN",
+  googleVerification: "tLvzDmZ30YWnEXQJb7t1JHxf1OROGMjRlc_Yk5PiBkw",
+  naverVerification: "8ba96b15f7b4994e156520352104144c060fa657",
   buildDate: "2026-05-29",
 };
 
