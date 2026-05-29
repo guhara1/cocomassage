@@ -2354,7 +2354,7 @@ function pricingJsonLd() {
 function buildIndex() {
   const depth = 0;
   const title = `${SITE.brand} | 전국 출장마사지 예약 안내`;
-  const description = `${SITE.brand} 출장마사지 예약 안내. 스웨디시·아로마테라피·딥티슈·타이·스포츠·림프 관리와 지역별 이용 안내, 요금, FAQ를 한 곳에서 확인하세요. 전화예약 ${SITE.phone}.`;
+  const description = `${SITE.brand} 전국 출장마사지 예약 안내. 스웨디시·딥티슈·아로마 등 6종 관리와 지역·요금·후기를 한 곳에서. 전화 ${SITE.phone}`;
   const jsonLd = [
     orgJsonLd(),
     { "@context": "https://schema.org", "@type": "WebSite", name: SITE.brand, url: SITE.url, inLanguage: "ko" },
@@ -2546,7 +2546,7 @@ function buildPolicy() {
   const depth = 1;
   const p = "policy/";
   const title = `이용약관 및 개인정보 처리방침 | ${SITE.brand}`;
-  const description = `${SITE.brand} 이용약관 및 개인정보 처리방침. 예약·취소 기준, 개인정보 수집 항목과 이용 목적, 보유 기간, 이용자 권리, 안전조치 기준까지 투명하게 안내합니다.`;
+  const description = `${SITE.brand} 이용약관 및 개인정보 처리방침. 예약·취소 기준과 개인정보 수집·이용·보유, 이용자 권리를 안내합니다.`;
   const bc = breadcrumb([{ name: "홈", path: "/" }, { name: "이용약관·개인정보" }], depth);
   const body = `${header(depth)}
 <main id="main">
@@ -2635,7 +2635,7 @@ function buildHow() {
   const depth = 1;
   const p = "how/";
   const title = `이용 방법 | ${SITE.brand} 출장마사지 예약 안내`;
-  const description = `${SITE.brand} 출장마사지 이용 방법. 예약 접수부터 안내 확인, 방문 준비, 관리 진행, 취소·환불까지 단계별 절차와 건물 유형별 방문 확인사항을 안내합니다.`;
+  const description = `${SITE.brand} 출장마사지 이용 방법. 예약부터 방문·관리·취소까지 단계별 절차와 건물 유형별 확인사항을 안내합니다.`;
   const bc = breadcrumb([{ name: "홈", path: "/" }, { name: "이용 방법" }], depth);
   const jsonLd = [
     bc.ld,
@@ -2725,7 +2725,7 @@ function buildPricing() {
   const depth = 1;
   const p = "pricing/";
   const title = `요금 안내 | ${SITE.brand} 출장마사지`;
-  const description = `${SITE.brand} 출장마사지 요금표. 타이 건식·아로마 습식·감성케어 오일·VVIP 전신케어·한국인/남성 스웨디시 코스별 60·90·120분 요금과 추가 출장비 기준을 안내합니다.`;
+  const description = `${SITE.brand} 출장마사지 코스별 요금표. 60·90·120분 요금과 추가 출장비 기준을 투명하게 안내합니다.`;
   const bc = breadcrumb([{ name: "홈", path: "/" }, { name: "요금 안내" }], depth);
   const body = `${header(depth, { active: "pricing" })}
 <main id="main">
@@ -3145,7 +3145,7 @@ function buildServicesIndex() {
   const depth = 1;
   const p = "services/";
   const title = `서비스 안내 | ${SITE.brand} 출장마사지`;
-  const description = `${SITE.brand}의 출장 관리 종류 안내. 스웨디시, 아로마테라피, 딥티슈, 타이마사지, 스포츠마사지, 림프마사지의 특징과 추천 상황을 비교해 선택하세요.`;
+  const description = `${SITE.brand} 출장 관리 종류 안내. 스웨디시·아로마·딥티슈·타이·스포츠·림프의 특징과 추천 상황을 비교해 보세요.`;
   const bc = breadcrumb([{ name: "홈", path: "/" }, { name: "서비스 안내" }], depth);
   const body = `${header(depth, { active: "services" })}
 <main id="main">
