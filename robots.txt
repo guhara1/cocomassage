@@ -1,0 +1,18 @@
+User-agent: *
+Allow: /
+
+User-agent: Googlebot
+Allow: /
+
+User-agent: Yeti
+Allow: /
+
+User-agent: NaverBot
+Allow: /
+
+User-agent: Daumoa
+Allow: /
+
+Sitemap: https://cocomassage.club/sitemap.xml
+Sitemap: https://cocomassage.club/sitemap1.xml
+Sitemap: https://cocomassage.club/rss.xml

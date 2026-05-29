@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <radialGradient id="g" cx="78%" cy="0%" r="90%">
+      <stop offset="0%" stop-color="#3a2a1d"/>
+      <stop offset="55%" stop-color="#15110f"/>
+      <stop offset="100%" stop-color="#100d0c"/>
+    </radialGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#g)"/>
+  <text x="80" y="250" font-family="Arial,Helvetica,sans-serif" font-size="42" letter-spacing="8" fill="#e0a878">COCO · 코코마사지</text>
+  <text x="80" y="350" font-family="Arial,Helvetica,sans-serif" font-size="78" font-weight="800" fill="#f3ece6">전국 출장마사지 안내</text>
+  <text x="80" y="430" font-family="Arial,Helvetica,sans-serif" font-size="40" fill="#b6a99d">스웨디시 · 아로마 · 딥티슈 · 타이 · 스포츠 · 림프</text>
+  <text x="80" y="540" font-family="Arial,Helvetica,sans-serif" font-size="38" font-weight="700" fill="#f2c79a">전화예약 0508-202-4717</text>
+</svg>
