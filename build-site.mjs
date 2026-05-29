@@ -2236,7 +2236,7 @@ function dongSection(name) {
   const sorted = [...list].sort((a, b) => a.localeCompare(b, "ko"));
   return `<h2>${esc(name)} 행정동 안내</h2>
       <p>${esc(name)} 전 행정동으로 방문이 가능합니다. ㄱㄴㄷ 순이며 1·2·3동 등 분동은 대표 동으로 묶었습니다. 동 이름을 누르면 동별 안내 페이지로 이동합니다.</p>
-      <div class="dong-grid">${sorted.map((d) => `<a class="dong-link" href="${romanize(d)}/index.html"><span>${esc(d)}</span><small>안내 →</small></a>`).join("")}</div>`;
+      <div class="dong-grid">${sorted.map((d) => `<a class="dong-link" href="${romanize(d)}/index.html"><span>${esc(d)}</span></a>`).join("")}</div>`;
 }
 // 동별 페이지 생성 (구/시군구 하위, depth 4)
 function buildDongPages(regionSlug, regionName, parent) {
@@ -2265,7 +2265,7 @@ function buildDongPages(regionSlug, regionName, parent) {
     const sibHtml = siblings.length
       ? `<h2>${esc(parent.name)} 인근 동 안내</h2>
       <p>${esc(dong)} 외에 ${esc(parent.name)}의 다른 행정동도 방문이 가능합니다. 인근 동 안내 페이지에서 각 동의 이용 정보를 확인하실 수 있습니다.</p>
-      <div class="dong-grid">${siblings.map((s) => `<a class="dong-link" href="../${romanize(s)}/index.html"><span>${esc(s)}</span><small>안내 →</small></a>`).join("")}</div>`
+      <div class="dong-grid">${siblings.map((s) => `<a class="dong-link" href="../${romanize(s)}/index.html"><span>${esc(s)}</span></a>`).join("")}</div>`
       : "";
     const body = `${header(depth, { active: "areas" })}
 <main id="main">
@@ -3370,10 +3370,11 @@ img{max-width:100%;display:block}
 .dong-tags{display:flex;flex-wrap:wrap;gap:8px;margin:6px 0 8px}
 .dong-tag{font-size:.85rem;color:var(--muted);background:var(--bg-alt);border:1px solid var(--line);border-radius:8px;padding:6px 12px}
 .dong-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:6px 0 8px}
-.dong-link{display:flex;flex-direction:column;gap:2px;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:13px 14px;transition:.15s}
-.dong-link:hover{border-color:var(--gold);transform:translateY(-2px)}
-.dong-link span{font-weight:700;color:var(--text);font-size:.95rem}
-.dong-link small{color:var(--gold);font-size:.76rem;font-weight:600}
+.dong-link{display:flex;align-items:center;justify-content:center;text-align:center;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:15px 14px;transition:transform .15s ease,border-color .15s ease,background .15s ease,box-shadow .15s ease}
+.dong-link span{font-weight:700;color:var(--text);font-size:.95rem;transition:color .15s ease}
+.dong-link:hover{border-color:var(--gold);background:linear-gradient(180deg,rgba(224,168,120,.12),var(--panel));transform:translateY(-3px);box-shadow:0 10px 24px rgba(0,0,0,.35)}
+.dong-link:hover span{color:var(--gold-bright)}
+.dong-link:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
 @media(max-width:920px){.dong-grid{grid-template-columns:repeat(3,1fr)}}
 @media(max-width:680px){.dong-grid{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:920px){.info-panel,.rec-cards,.zone-cards{grid-template-columns:1fr}}
