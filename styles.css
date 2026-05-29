@@ -129,6 +129,10 @@ img{max-width:100%;display:block}
 .doc ul{padding-left:20px;color:var(--text)}
 .doc li{margin:6px 0}
 .doc a{color:var(--gold);text-decoration:underline;text-underline-offset:3px}
+.doc-ul{padding-left:20px;color:var(--text);margin:0 0 8px}
+.doc-ul li{margin:6px 0}
+.doc-ul a{color:var(--gold);text-decoration:underline;text-underline-offset:3px}
+.doc-ul strong{color:var(--gold-bright)}
 .doc-meta{color:var(--muted);font-size:.85rem;margin-top:24px}
 
 /* info table */
